@@ -24,6 +24,19 @@ Jose Garcia Ledesma  *  Grace Alvarez  *  Christian Guerrero  *  Gabriel Loring
                                                                                       
 '''
 
+'''
+Objective of the game is the find the Catalina necklace, worth 10 million.
+The necklace is hidden in a secret chest.
+Player takes 2 actions.
+    1.) Player can move North, East, South, or West
+    2.) and player can open door
+If player does not find hidden necklace in the room entered return no jewels found.
+Move to next room and repeat until jewels are found.
+To win the game you must successfully find the Catalina necklace, exit the mansion, and get inside the getaway vehicle.
+
+
+'''
+
 # Globals to cover movment directions
 NORTH = 1
 EAST = 2
@@ -38,13 +51,13 @@ player = { "health" :  100,
           "location": "start",    
           "inventory": "nothing"}
 
-# Lab 12 item C requires a loose condition a Non player charachter may be usefull
+# Lab 12 item C requires a loose condition a Non player character may be useful
 larry = { "health" :  100, 
           "location": "start",
           "inventory": "nothing"}
 
 
-# OK appologies, the map is stored in triplicate!
+# OK apologies, the map is stored in triplicate!
 #
 # the first copy of the map is in the list map
 # this is a list of rows and columns to lay out the "rooms" and their
@@ -66,31 +79,35 @@ office = { "room_description" : "The room is XYZ, to the north is XYZ, to the ea
            "npc" : larry,
            "object" : "nothing"}  
         
-lobby = { "room_description" : "The room is XYZ, to the north is XYZ, to the east lies XYZ the south wall is blocked and to the east is y",
-           "passable_NESW" : "NYYY",
-           "npc" : larry,
-           "object" : "nothing"}      
+library = {
+    "room_description": "The room is the library. The library holds books to the north, east, and west. Along these walls is a special book that leads to a hidden room. Find the book that hisses and slither and you will find the secret room.",
+    "passable_NESW": "NYYY",
+    "npc": larry,
+    "object": "nothing"}
 
+ballroom = {
+    "room_description": "You have entered the ballroom. The ballroom is filled with 100 guests, all dancing. To the north is the staircase, to the east lies the library, to the west lies the billiards room. You must blend in with the party. Do not get caught as you make your way to the next room.",
+    "passable_NESW": "NNCY",
+    "npc": larry,
+    "object": "nothing"}
 
-hall = { "room_description" : "The room is XYZ, to the north is XYZ, to the east lies XYZ the south wall is blocked and to the east is y",
-           "passable_NESW" : "NNCY",
-           "npc" : larry,
-           "object" : "nothing"}   
-        
-hidden = { "room_description" : "The room is XYZ, to the north is XYZ, to the east lies XYZ the south wall is blocked and to the east is y",
-           "passable_NESW" : "YNNN",
-           "npc" : larry,
-           "object" : "nothing"}  
+hidden = {
+    "room_description": "You've found the hidden room. Here lies the Catalina necklace in a locked wooden chest. To open the chest you must first unlock the secret ",
+    "passable_NESW": "YNNN",
+    "npc": larry,
+    "object": "nothing"}
+
         
 street = { "room_description" : "The room is XYZ, to the north is XYZ, to the east lies XYZ the south wall is blocked and to the east is y",
            "passable_NESW" : "YNYN",
            "npc" : larry,
            "object" : "nothing"}   
         
-safe = { "room_description" : "The room is XYZ, to the north is XYZ, to the east lies XYZ the south wall is blocked and to the east is y",
-           "passable_NESW" : "YNNN",
-           "npc" : larry,
-           "object" : "nothing"}   
+safe = {
+    "room_description": "This is the safe vault room. To the north lies the vault. The east wall is blocked off, the west wall is blocked off. To exit return south. To open the vault type open.",
+    "passable_NESW": "YNNN",
+    "npc": larry,
+    "object": "nothing"}
 
 park = {   "room_description" : "The park is nice, a good place to take your dog, or to step in something left by somonelses dog. To the north is the back wall of the museum, east leads to the starting position and both south and west lead to the the edge of the game world",
            "passable_NESW" : "NYNN",
@@ -108,15 +125,15 @@ ally = {    "room_description" : "An alley, bad things happen here",
            "object" : "nothing"}  
 
 
-rooms ={"office": office,
-        "lobby": lobby,
-        "hall": hall,
-        "hidden": hidden,
-        "street": street,
-        "safe": safe,
-        "park": park,
-        "start": start,
-        "ally": ally}
+rooms = {"office": office,
+         "library": library,
+         "ballroom": ballroom,
+         "hidden": hidden,
+         "street": street,
+         "safe": safe,
+         "park": park,
+         "start": start,
+         "ally": ally}
 
 # We need lists of words for the parser
 #
@@ -159,14 +176,42 @@ def debugLog(functionName, action, message):
     debugLog.string = ("%s\n%04d\t%s:\t%s:\t%s"%(debugLog.string, debugLog.counter, functionName, action, message))
 #  End of debug log !!!
     
-  
+def titleMessage():
+    print(title)
+    return
+ 
 def welcomeMessage():
-  '''  
-  Display the Welcome message, keep it as a function incase we 
-  every wanted to get more creative and add sound or restore state and such
-  '''  
-  print(title)
+    #print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    #print(title)
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print("Welcome to The Heist")
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print("Type start to begin")
+    print("Type help to learn how to play")
+    print("Type exit to leave the game")
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    return
 
+def story():
+    print("Larry is on a mission to find the Catalina necklace (worth 10 million).")
+    print("He has studied the blueprints to the PyCharm Mansion.")
+    print("A ball is being thrown at the PyCharm Mansion tonight.")
+    print("Larry is entering the ball under the alias Jonathon Windsor")
+    print("You must help Larry find the Catalina necklace, but be careful not to get caught.")
+    print("As you go through the mansion you will find clues that lead you to a room with a hidden passage")
+    print("Find that passage and you will find the necklace")
+    return   
+   
+'''
+def library():
+    print("")
+    print("You have just entered the library.")
+    print("1 - North to book wall")
+    print("2 - East to Office door")
+    print("3 - West to Ballroom door")
+    print("4 - South to Street door")
+    print("Choose a direction")
+'''
 
 def parseInput(userString):
   '''  
@@ -351,7 +396,9 @@ def interactWithDoor(action, item, subject):
 
 
 def gameLoop():
+    titleMessage()
     welcomeMessage()
+    story()
     debugLog("gameLoop", "start", "")
     gameOn = True
     gameCycles = 0
