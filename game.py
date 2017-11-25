@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# CST205 Lab 11
+# CST205 Lab 11 & 12
 # November 22, 2017
 #
 # Team 5, Hopper
@@ -11,17 +11,11 @@
 
 # Test for Lab 11 bullet 1, Title Screen
 title = '''
-
- ████████╗██╗  ██╗███████╗    ██╗  ██╗███████╗██╗███████╗████████╗    
- ╚══██╔══╝██║  ██║██╔════╝    ██║  ██║██╔════╝██║██╔════╝╚══██╔══╝    
-    ██║   ███████║█████╗      ███████║█████╗  ██║███████╗   ██║       
-    ██║   ██╔══██║██╔══╝      ██╔══██║██╔══╝  ██║╚════██║   ██║       
-    ██║   ██║  ██║███████╗    ██║  ██║███████╗██║███████║   ██║       
-    ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝╚══════╝╚═╝╚══════╝   ╚═╝       
+The Heist  
 
 An interactive test adventure by: Team 5, Hopper 
 Jose Garcia Ledesma  *  Grace Alvarez  *  Christian Guerrero  *  Gabriel Loring
-                                                                                      
+
 '''
 
 '''
@@ -38,18 +32,20 @@ To win the game you must successfully find the Catalina necklace, exit the mansi
 '''
 
 # Globals to cover movment directions
-NORTH = 1
-EAST = 2
-SOUTH = 3
-WEST  = 4
+NORTH = 0
+EAST = 1
+SOUTH = 2
+WEST  = 3
+
+MAP_WIDTH = 3
 
 # Global to describe how many empty commands before it assumed the player wants to quit
 EMPTY_ENTERS_TO_BAIL_OUT = 3
 
 # A global dictionary to hold player attributes
 player = { "health" :  100, 
-          "location": "start",    
-          "inventory": "nothing"}
+           "location": "start",    
+           "inventory": "nothing"}
 
 # Lab 12 item C requires a loose condition a Non player character may be useful
 larry = { "health" :  100, 
@@ -78,7 +74,7 @@ office = { "room_description" : "The room is XYZ, to the north is XYZ, to the ea
            "passable_NESW" : "NYYN",
            "npc" : larry,
            "object" : "nothing"}  
-        
+
 library = {
     "room_description": "The room is the library. The library holds books to the north, east, and west. Along these walls is a special book that leads to a hidden room. Find the book that hisses and slither and you will find the secret room.",
     "passable_NESW": "NYYY",
@@ -97,12 +93,12 @@ hidden = {
     "npc": larry,
     "object": "nothing"}
 
-        
+
 street = { "room_description" : "The room is XYZ, to the north is XYZ, to the east lies XYZ the south wall is blocked and to the east is y",
            "passable_NESW" : "YNYN",
            "npc" : larry,
            "object" : "nothing"}   
-        
+
 safe = {
     "room_description": "This is the safe vault room. To the north lies the vault. The east wall is blocked off, the west wall is blocked off. To exit return south. To open the vault type open.",
     "passable_NESW": "YNNN",
@@ -113,16 +109,16 @@ park = {   "room_description" : "The park is nice, a good place to take your dog
            "passable_NESW" : "NYNN",
            "npc" : larry,
            "object" : "nothing"}  
-        
+
 start = {  "room_description" : "This is the staging area for your heist  to the north is a street, wide but with no visible traffic off to the east is an ally, west is the park and south is the edge of the game world",
            "passable_NESW" : "YYYN",
            "npc" : larry,
            "object" : "nothing"}  
-        
+
 ally = {    "room_description" : "An alley, bad things happen here",
-           "passable_NESW" : "NNNY",
-           "npc" : larry,
-           "object" : "nothing"}  
+            "passable_NESW" : "NNNY",
+            "npc" : larry,
+            "object" : "nothing"}  
 
 
 rooms = {"office": office,
@@ -157,29 +153,19 @@ people = ["self", "dog", "scooby", "larry"]
 administrative = ["draw", "debug", "save", "help", "explain", "tutorial", "exit", "quit"]
 
 
-# These next two functions are just for debug.  I wanted two global variables that would 
-# be accessed and updated in a single function to create a debug log.
-# This is a no-no in python.   So the first function static_var  is used by the decorators 
-# to wrap around debugLog so I cankeep a long text string and count
-def static_var(varname, value):
-    def decorate(func):
-        setattr(func, varname, value)
-        return func
-    return decorate
-    
-@static_var("string", "")      
-@static_var("counter", 0)    
+  
 def debugLog(functionName, action, message):
+    print ("%s\n%04d\t%s:\t%s:\t%s"%("", 0, functionName, action, message))    
+    return
     if functionName == "debugLog":
         print(debugLog.string)
-    debugLog.counter +=1
-    debugLog.string = ("%s\n%04d\t%s:\t%s:\t%s"%(debugLog.string, debugLog.counter, functionName, action, message))
-#  End of debug log !!!
-    
+    #debugLog.counter +=1
+    #debugLog.string = ("%s\n%04d\t%s:\t%s:\t%s"%(debugLog.string, debugLog.counter, functionName, action, message))
+
 def titleMessage():
     print(title)
     return
- 
+
 def welcomeMessage():
     #print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     #print(title)
@@ -201,7 +187,7 @@ def story():
     print("As you go through the mansion you will find clues that lead you to a room with a hidden passage")
     print("Find that passage and you will find the necklace")
     return   
-   
+
 '''
 def library():
     print("")
@@ -214,54 +200,93 @@ def library():
 '''
 
 def parseInput(userString):
-  '''  
-  This is a super basic parser.  It assumes we will never have a more complicated user command then 
-  Verb, Noun, Subject
-  Give  Key Larry
-  it also does not expect that all elements will be present
-  Walk West
-  
-  It does this by looking at all of the word lists and seeing if there is a match in the user input.
-  If multiple matches are found the last match is the one returned
-  ''' 
-  caseCorrectedString = userString.lower()
-  debugLog("parseInput", "input", caseCorrectedString)
-  action = ""
-  item = ""
-  subject = ""
-  for x in actions:
-    if x in userString:
-      action = x
-  for x in travel:
-    if x in userString:
-      action = x
-  for x in administrative:
-    if x in userString:
-      action = x
+    '''  
+    This is a super basic parser.  It assumes we will never have a more complicated user command then 
+    Verb, Noun, Subject
+    Give  Key Larry
+    it also does not expect that all elements will be present
+    Walk West
 
-  for x in directions:
-    if x in userString:
-      item = x
-  for x in items:
-    if x in userString:
-      item = x
+    It does this by looking at all of the word lists and seeing if there is a match in the user input.
+    If multiple matches are found the last match is the one returned
+    ''' 
+    caseCorrectedString = userString.lower()
+    debugLog("parseInput", "input", caseCorrectedString)
     
-  for x in people:
-    if x in userString:
-      subject = x
+    action = find_action_words(userString)
+    item = find_directions_or_nouns(userString)           
+    subject = find_subject_words(userString)
 
-  debugLog("parseInput", "return", ("%s\t%s\t%s"%(action, item, subject)))
-  return action, item, subject
-    
+    debugLog("parseInput", "return", ("%s\t%s\t%s"%(action, item, subject)))
+    return action, item, subject
+
+def find_subject_words(userString):
+    '''
+    Search the user typed command for any word in our subject string list
+    we do not respect SPACES so a substring match will still be a match.
+    Also Note we run until we run out of words to search so if two words in the 
+    list match, we return the last match
+    '''
+    subject = ""
+    for x in people:
+        if x in userString:
+            subject = x
+    return subject
+
+def find_directions_or_nouns(userString):
+    '''
+    Search the user typed command for any word in our subject string list
+    we do not respect SPACES so a substring match will still be a match.
+    Also Note we run until we run out of words to search so if two words in the 
+    list match, we return the last match
+    '''
+    item = ""
+    for x in directions:
+        if x in userString:
+            item = x
+    for x in items:
+        if x in userString:
+            item = x
+    return item
+
+
+
+def find_action_words(userString):
+    '''
+    Search the user typed command for any word in our subject string list
+    we do not respect SPACES so a substring match will still be a match.
+    Also Note we run until we run out of words to search so if two words in the 
+    list match, we return the last match
+    '''
+    action = ""
+    for x in actions:
+        if x in userString:
+            action = x
+    for x in travel:
+        if x in userString:
+            action = x
+    for x in administrative:
+        if x in userString:
+            action = x
+    return action
+
 def getUserInput(promptString = ""):
+    '''
+    Prompt the user to type in a command and return a lower case string of what the user typed.
+    If the user accidently hits enter for an empty string they will be prompted again.
+    if the user hits enter EMPTY_ENTERS_TO_BAIL_OUT in a row then the function bails out and
+    returns assuming the user is frusterated and does not know how to quit.
+    '''
     userInput = ""
     count = 0
     while userInput == "" and count < EMPTY_ENTERS_TO_BAIL_OUT:
-        userInput = input(promptString)
+        #printNow(promptString)
+        userInput = requestString(promptString)
         count += 1
-        
-    return userInput.lower()
-    
+
+    caseCorrected = userInput.lower()    
+    return caseCorrected
+
 
 def isAdministrative(action="", item="", subject=""):
     if action == 'debug':
@@ -308,79 +333,129 @@ def drawMap():
         canvas = canvas + "+---------------+---------------+---------------+\n"
 
     print(canvas)    
-  
-    
+
+
 def isTravelCommand(action, item, subject):
+    '''
+    Check if the user command is travel or player motion related.  If it is and the motion is possible
+    move the player, otherwise return
+    '''
     debugLog("isTravelCommand", "input", ("%s\t%s\t%s"%(action, item, subject)))
     if (action in travel) and ( item in directions ):
         debugLog("isTravelCommand", isTravelCommand,item)
-        currentRoom = player["location"] 
+        
+        DIRECTION_INDEX = convert_direction_to_index(item)
+        try_to_move_player_to_new_room(DIRECTION_INDEX)
 
-        if item == "north" or item == "up":
-            DIRECTION_INDEX = NORTH
-            debugLog("isTravelCommand", "directions","NORTH")
-        elif item == "east" or item == "right":
-            DIRECTION_INDEX = EAST  
-            debugLog("isTravelCommand", "directions","EAST")
-        elif item == "south" or item == "down":
-            DIRECTION_INDEX = SOUTH
-            debugLog("isTravelCommand", "directions","SOUTH")
-        elif item == "west" or directioitemns == "left":
-            DIRECTION_INDEX = WEST  
-            debugLog("isTravelCommand", "directions","WEST")
-        
-        passable = rooms[currentRoom]["passable_NESW"][DIRECTION_INDEX] 
-        debugLog("isTravelCommand", "passable array",rooms[currentRoom]["passable_NESW"])
-        debugLog("isTravelCommand", "passable selecgted",passable)
-        if passable == 'Y' or passable == 'O':    # Yes passable or O for open door
-            player["location"] = movePlayer(DIRECTION_INDEX)
-            describeRoom()    
-        elif passable == 'C':    # C is a closed door
-            print("You try but the door is closed")
-            debugLog("isTravelCommand", "report closed door","")
-        else:
-            print("You can not move in that direction")
-            debugLog("isTravelCommand", "report could not travel","")
-        
         return True
     debugLog("parseInput", "return","False")
     return False
 
+def try_to_move_player_to_new_room(DIRECTION_INDEX):
+    currentRoom = player["location"] 
+    passable = rooms[currentRoom]["passable_NESW"][DIRECTION_INDEX] 
+    debugLog("try_to_move_player_to_new_room", "passable array",rooms[currentRoom]["passable_NESW"])
+    debugLog("try_to_move_player_to_new_room", "passable selecgted",passable)
+    if passable == 'Y' or passable == 'O':    # Yes passable or O for open door
+        player["location"] = movePlayer(DIRECTION_INDEX)
+        describeRoom()    
+    elif passable == 'C':    # C is a closed door
+        print("You try but the door is closed")
+        debugLog("try_to_move_player_to_new_room", "report closed door","")
+    else:
+        print("You can not move in that direction")
+        debugLog("try_to_move_player_to_new_room", "report could not travel","")
+
+def convert_direction_to_index(item):
+    '''
+    The player may express motion in multiple different ways, North, up or such, convert these to
+    a index 1-2-3-4 that represents motion direction N-E-S-W
+    '''
+    if item == "north" or item == "up":
+        DIRECTION_INDEX = NORTH
+        debugLog("convert_direction_to_index", "directions","NORTH")
+    elif item == "east" or item == "right":
+        DIRECTION_INDEX = EAST  
+        debugLog("convert_direction_to_index", "directions","EAST")
+    elif item == "south" or item == "down":
+        DIRECTION_INDEX = SOUTH
+        debugLog("convert_direction_to_index", "directions","SOUTH")
+    elif item == "west" or directioitemns == "left":
+        DIRECTION_INDEX = WEST  
+        debugLog("convert_direction_to_index", "directions","WEST")
+    return DIRECTION_INDEX
+
 
 def movePlayer(direction):
+    '''
+    The player has requested a move and the the move has external to this function been
+    determined to permissible.
+    Take the users current room and then naigate relative North is up, East is Right and so on
+    '''
+    currentRoomNumber = find_current_room_number()
+    debugLog("movePlayer", currentRoomNumber,direction)
+    destinationRoomNumber = find_room_by_relative_direction(direction, currentRoomNumber)
+    debugLog("movePlayer", "destinationRoomNumber",destinationRoomNumber)
+    destinationRoomName = convert_room_number_to_rooom_name(destinationRoomNumber)
+    debugLog("movePlayer", "destinationRoomName",destinationRoomName)
+    return destinationRoomName
+
+def convert_room_number_to_rooom_name(roomNumber):
+    '''
+    For navigation we use the map list of list.  Rooms are numbered 1 - 9 Left to Right, Top to Bottom
+    This function counts through the rooms and returns the room name for the room number 
+    '''
+    debugLog("convert_room_number_to_rooom_name", "Room Name to find for number",roomNumber)
+    count = 0
+    for row in map:
+        for roomName in row:
+            count = count + 1
+            print count
+            if roomNumber == count:
+                debugLog("convert_room_number_to_rooom_name", "Name Found",roomName)
+                return roomName
+
+def find_current_room_number():
+    '''
+    We are currently keeping track of the user position on the map using the name of the room
+    convert that name back to a room index numbered 1-9 Left to right top to bottom on the map
+    '''
     currentRoom = player["location"] 
     currentRoomNumber = 0
     for row in map:
         for room in row:
             currentRoomNumber = currentRoomNumber + 1
             if currentRoom == room:
-                break
-                
+                debugLog("find_current_room_number", currentRoom,currentRoomNumber)
+                return currentRoomNumber
+    debugLog("find_current_room_number", currentRoom,"Not Found")
+    return 
+
+def find_room_by_relative_direction(direction, currentRoomNumber):
+    debugLog("find_room_by_relative_direction", direction,currentRoomNumber)
     if direction == NORTH:
-        currentRoomNumber = currentRoomNumber - 3
+        newRoom = currentRoomNumber - MAP_WIDTH # North moves one row up in the map
     elif direction == EAST:
-        currentRoomNumber = currentRoomNumber + 1
+        newRoom = currentRoomNumber + 1
     elif direction == SOUTH:    
-        currentRoomNumber = currentRoomNumber + 3
+        newRoom = currentRoomNumber + MAP_WIDTH # South moves one row down in the map
     elif direction == WEST:
-        currentRoomNumber = currentRoomNumber - 1
+        newRoom = currentRoomNumber - 1
     else:
         raise "Error"
+    debugLog("find_room_by_relative_direction", "New room",newRoom)
+    return newRoom
 
-    count = 0
-    for row in map:
-        for room in row:
-            count = count + 1
-            if currentRoomNumber == count:
-                return room
-        
 def describeRoom():
+    '''
+    Display the room description text for the current room
+    '''
     currentRoom = player["location"] 
     debugLog("describeRoom", currentRoom,"")
     print("You are in the %s"%currentRoom)   
     print("%s"%rooms[currentRoom]["room_description"])
 
-                
+
 def door(action, item, subject):
     currentRoom = player["location"] 
     if "open" in action and 'door' in item:
@@ -388,10 +463,10 @@ def door(action, item, subject):
             rooms[currentRoom]["north_passable"] = "open"
 
 
-    
+
 def interactWithDoor(action, item, subject):
     pass 
-    
+
 
 
 
@@ -407,31 +482,30 @@ def gameLoop():
         gameCycles += 1
         userString = getUserInput()
         (action, item, subject) = parseInput(userString)
-        
+
         # See if the user want to quit
         if action == 'quit' or userString == "" or userString == "exit":
             gameOn = False  
             continue
-            
+
         #Are we moving
         if isTravelCommand(action, item, subject):
             pass
             continue
-            
+
         # Are we interacting
-        
+
         # Other
-        
+
         # Administrative commands
         if isAdministrative(action, item, subject):      
-          continue
-              
+            continue
+
     debugLog("gameLoop", "exit", ("gameOn:\t%s\tgameCycles:\t%s"%(gameOn,gameCycles)))   
-    
-    
-    
+
+
+
 
 
 
 gameLoop()
-debugLog("debugLog", "", "")
