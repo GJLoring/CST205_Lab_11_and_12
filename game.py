@@ -9,6 +9,7 @@
 #  Gabriel Loring
 
 
+# Test for Lab 11 bullet 1, Title Screen
 title = '''
 
  ████████╗██╗  ██╗███████╗    ██╗  ██╗███████╗██╗███████╗████████╗    
@@ -22,21 +23,40 @@ An interactive test adventure by: Team 5, Hopper
 Jose Garcia Ledesma  *  Grace Alvarez  *  Christian Guerrero  *  Gabriel Loring
                                                                                       
 '''
+
+# Globals to cover movment directions
 NORTH = 1
 EAST = 2
 SOUTH = 3
 WEST  = 4
 
+# Global to describe how many empty commands before it assumed the player wants to quit
 EMPTY_ENTERS_TO_BAIL_OUT = 3
 
-player ={ "health" :  100, 
+# A global dictionary to hold player attributes
+player = { "health" :  100, 
+          "location": "start",    
+          "inventory": "nothing"}
+
+# Lab 12 item C requires a loose condition a Non player charachter may be usefull
+larry = { "health" :  100, 
           "location": "start",
           "inventory": "nothing"}
 
-larry ={ "health" :  100, 
-                    "location": "start",
-                    "inventory": "nothing"}
 
+# OK appologies, the map is stored in triplicate!
+#
+# the first copy of the map is in the list map
+# this is a list of rows and columns to lay out the "rooms" and their
+# spacial arraingment.  
+#
+# The 2nd is a dictionary for every room.  The dictionary holds the room description
+# as well as a entry that describes the valid movments out of the room
+# I have a place holder for a NPC and object
+#
+# The third copy of the map is in the rooms dictionary.  This lets me look 
+# up a specific rooms dictionary using its name.  not sure how happy I am with
+# this, it is super hacky
 map = [ [ "office", "lobby", "hall"],
         [ "hidden", "street", "safe"],
         [ "park", "start", "ally"]]
@@ -97,16 +117,33 @@ rooms ={"office": office,
         "park": park,
         "start": start,
         "ally": ally}
-    
+
+# We need lists of words for the parser
+#
+# Words will break down to:
+#    1. actions/ verbs
+#        A) travel = travel  related words that tell us we should try to move the player
+#        B) actions = Game verbs that will allow player interactions with the enviroment
+#    2. Nouns / directions
+#        A) directions = indicate how we shold translate the player to another room
+#        B) items = things that cna be interacted with
+#        C) people = NPCs?  not sure more of a place holder for the idea at the moment 
+#    3. Administrative 
+#        A) administrative = these are here for the program to see running program state and for the player to quit.
 travel    = [ "go", "walk", "run", "skip", "get", "move", "travel", "head" ]
 actions   = ["get", "take", "use", "open", "close", "examine", "look", "close", "show", "kick"]
-administrative = ["draw", "debug", "save", "help", "explain", "tutorial", "exit", "quit"]
 
 directions = [ "left", "right", "forward", "ahead", "back", "up", "down", "north", "south", "east", "west" ]
 items   = ["door", "gun", "safe", "map"]
-people = ["self", "dog", "scooby"]
+people = ["self", "dog", "scooby", "larry"]
+
+administrative = ["draw", "debug", "save", "help", "explain", "tutorial", "exit", "quit"]
 
 
+# These next two functions are just for debug.  I wanted two global variables that would 
+# be accessed and updated in a single function to create a debug log.
+# This is a no-no in python.   So the first function static_var  is used by the decorators 
+# to wrap around debugLog so I cankeep a long text string and count
 def static_var(varname, value):
     def decorate(func):
         setattr(func, varname, value)
@@ -120,41 +157,56 @@ def debugLog(functionName, action, message):
         print(debugLog.string)
     debugLog.counter +=1
     debugLog.string = ("%s\n%04d\t%s:\t%s:\t%s"%(debugLog.string, debugLog.counter, functionName, action, message))
-
+#  End of debug log !!!
     
+  
 def welcomeMessage():
-    print(title)
+  '''  
+  Display the Welcome message, keep it as a function incase we 
+  every wanted to get more creative and add sound or restore state and such
+  '''  
+  print(title)
 
 
 def parseInput(userString):
-    caseCorrectedString = userString.lower()
-    debugLog("parseInput", "input", caseCorrectedString)
-    action = ""
-    item = ""
-    person = ""
-    for x in actions:
-        if x in userString:
-            action = x
-    for x in travel:
-        if x in userString:
-            action = x
-    for x in administrative:
-        if x in userString:
-            action = x
+  '''  
+  This is a super basic parser.  It assumes we will never have a more complicated user command then 
+  Verb, Noun, Subject
+  Give  Key Larry
+  it also does not expect that all elements will be present
+  Walk West
+  
+  It does this by looking at all of the word lists and seeing if there is a match in the user input.
+  If multiple matches are found the last match is the one returned
+  ''' 
+  caseCorrectedString = userString.lower()
+  debugLog("parseInput", "input", caseCorrectedString)
+  action = ""
+  item = ""
+  subject = ""
+  for x in actions:
+    if x in userString:
+      action = x
+  for x in travel:
+    if x in userString:
+      action = x
+  for x in administrative:
+    if x in userString:
+      action = x
 
-    for x in directions:
-        if x in userString:
-            item = x
-    for x in items:
-        if x in userString:
-            item = x
+  for x in directions:
+    if x in userString:
+      item = x
+  for x in items:
+    if x in userString:
+      item = x
     
-    for x in people:
-        if x in userString:
-            person = x
+  for x in people:
+    if x in userString:
+      subject = x
 
-    debugLog("parseInput", "return", ("%s\t%s\t%s"%(action, item, person)))
-    return action, item, person
+  debugLog("parseInput", "return", ("%s\t%s\t%s"%(action, item, subject)))
+  return action, item, subject
     
 def getUserInput(promptString = ""):
     userInput = ""
@@ -166,9 +218,9 @@ def getUserInput(promptString = ""):
     return userInput.lower()
     
 
-def isAdministrative(action="", item="", person=""):
+def isAdministrative(action="", item="", subject=""):
     if action == 'debug':
-        debugLog("debugLog", item, person)
+        debugLog("debugLog", item, subject)
         return True  
     if action == 'draw':
         debugLog("isAdministrative", "draw","map")
@@ -213,8 +265,8 @@ def drawMap():
     print(canvas)    
   
     
-def isTravelCommand(action, item, person):
-    debugLog("isTravelCommand", "input", ("%s\t%s\t%s"%(action, item, person)))
+def isTravelCommand(action, item, subject):
+    debugLog("isTravelCommand", "input", ("%s\t%s\t%s"%(action, item, subject)))
     if (action in travel) and ( item in directions ):
         debugLog("isTravelCommand", isTravelCommand,item)
         currentRoom = player["location"] 
@@ -284,15 +336,15 @@ def describeRoom():
     print("%s"%rooms[currentRoom]["room_description"])
 
                 
-def door(action, item, person):
+def door(action, item, subject):
     currentRoom = player["location"] 
     if "open" in action and 'door' in item:
-        if 'north' in person and rooms[currentRoom]["north_passable"] == "closed_door":
+        if 'north' in subject and rooms[currentRoom]["north_passable"] == "closed_door":
             rooms[currentRoom]["north_passable"] = "open"
 
 
     
-def interactWithDoor(action, item, person):
+def interactWithDoor(action, item, subject):
     pass 
     
 
@@ -307,7 +359,7 @@ def gameLoop():
     while gameOn:
         gameCycles += 1
         userString = getUserInput()
-        (action, item, person) = parseInput(userString)
+        (action, item, subject) = parseInput(userString)
         
         # See if the user want to quit
         if action == 'quit' or userString == "" or userString == "exit":
@@ -315,7 +367,7 @@ def gameLoop():
             continue
             
         #Are we moving
-        if isTravelCommand(action, item, person):
+        if isTravelCommand(action, item, subject):
             pass
             continue
             
@@ -324,7 +376,7 @@ def gameLoop():
         # Other
         
         # Administrative commands
-        if isAdministrative(action, item, person):      
+        if isAdministrative(action, item, subject):      
           continue
               
     debugLog("gameLoop", "exit", ("gameOn:\t%s\tgameCycles:\t%s"%(gameOn,gameCycles)))   
