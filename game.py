@@ -446,6 +446,7 @@ def office_handler(action, item, subject):
     '''
     if item == 'key':
     	player["inventory"] = 'key'
+    	printNow("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
 
 def staircase_handler(action, item, subject):
     '''
@@ -482,7 +483,7 @@ def library_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    if  action == 'take' and item == 'book':
+    if  item == 'book':
     	library["passable_NESW"] = "YNNY"
     	printNow("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
 
