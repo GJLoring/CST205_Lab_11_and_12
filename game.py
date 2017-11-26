@@ -440,55 +440,57 @@ def describeRoom():
     printNow("%s\n\n"%rooms[currentRoom]["room_description"])
 
 
-def office_handleer(action, item, subject):
+def office_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     pass
 
-def staircase_handleer(action, item, subject):
+def staircase_handler(action, item, subject):
+    '''
+    The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
+    '''
+    print "Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n"
+    describeRoom()
+
+def hidden_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     pass
 
-def hidden_handleer(action, item, subject):
+def billiards_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     pass
 
-def billiards_handleer(action, item, subject):
+def ballroom_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     pass
 
-def ballroom_handleer(action, item, subject):
+def library_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     pass
 
-def library_handleer(action, item, subject):
+def park_handler(action, item, subject):
+    '''
+    The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
+    '''
+    print "You really shouldnot be wasting time in the park.\n"
+    describeRoom()
+
+def start_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     pass
 
-def park_handleer(action, item, subject):
-    '''
-    The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
-    '''
-    pass
-
-def start_handleer(action, item, subject):
-    '''
-    The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
-    '''
-    pass
-
-def getaway_vehicle_handleer(action, item, subject):
+def getaway_vehicle_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
