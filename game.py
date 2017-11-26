@@ -91,7 +91,7 @@ hidden = {
     "object": "necklace"}
 
 billiards = {
-    "room_description": "The billiards room is filled with many games, but you won't find what you're looking for here. The north, west and south walls are blocked off. To exit return east. To open the vault type open.",
+    "room_description": "The billiards room is filled with many games, but you won't find what you're looking for here. To open the vault type open.",
     "passable_NESW": "NYNN",
     "npc": larry,
     "object": "secret_book"}
@@ -122,7 +122,7 @@ start = {
     "object" : "nothing"}
 
 getaway_vehicle = {
-    "room_description" : "A 1973 Oldsmobile Delta 88, I wonder if Sam Raimi is directing this heist. Once you have the necklace, get in to win the game!",
+    "room_description" : "A 1973 Oldsmobile Delta 88, I wonder if Sam Raimi is directing this heist. Once you have the necklace, get and tell the driver to leave to win the game!",
     "passable_NESW" : "NNNY",
     "npc" : larry,
     "object" : "nothing"}
@@ -152,7 +152,7 @@ rooms = {
 #    3. Administrative
 #        A) administrative = these are here for the program to see running program state and for the player to quit.
 travel    = [ "go", "walk", "run", "skip", "get", "move", "travel", "head" ]
-actions   = ["get", "take", "steal", "lift", "snatch", "borrow", "use", "open", "close", "examine", "look", "close", "show", "kick"]
+actions   = ["get", "take", "steal", "open", "close", "leave", "drive", "flee"]
 
 directions = [ "left", "right", "forward", "ahead", "back", "up", "down", "north", "south", "east", "west" ]
 items   = ["door", "gun", "safe", "map", "necklace", "key", "secret", "book" ]
@@ -438,9 +438,9 @@ def decodeValidMotionToStrings(index):
       return ("A wall")
     elif roomBoarder == 'F':
       return ("A dangerous edge ")
-    
+
     # We should have bailed out if thewere is a wall to the side
-    # this means we are ok to try to look to this side  
+    # this means we are ok to try to look to this side
     currentRoomNumber = find_current_room_number()
     adjacentRoomNumber = find_room_by_relative_direction(index, currentRoomNumber)
     adjacentRoomName = convert_room_number_to_rooom_name(adjacentRoomNumber)
@@ -484,7 +484,11 @@ def hidden_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    if  action == 'take' or action == 'get':
+    if player["inventory"] != 'secret':
+      printNow('You must first have the secret to the chest')
+      return
+
+    if action == 'take' or action == 'get':
     	player["inventory"] == 'necklace'
     	printNow("Wasting no time you grab the necklace and concel it in your jacket.\n")
 
@@ -492,16 +496,22 @@ def billiards_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    printNow("Sure you could sit around and play a game by yourself, or you could maybe go steal a necklace.\n")
-    describeRoom()
+    if action == 'open':
+      if player["inventory"] == 'key':
+        printNow("You can only hold one hidden item at a time, use the key you have to open the library then come back here")
+        return
+
+      player["inventory"] = 'secret'
+      printNow("Opening the vault yo find the secret to the chest with the necklace.\n")
 
 def ballroom_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     if player["inventory"] == 'key' and action == 'open':
-    	ballroom["passable_NESW"] = "YOYY"
-    	printNow("You take a quick glance around the room and then use your key to unlock the library door.\n")
+      ballroom["passable_NESW"] = "YOYY"
+      player["inventory"] = ''
+      printNow("You take a quick glance around the room and then use your key to unlock the library door.\n")
 
 
 def library_handler(action, item, subject):
@@ -532,7 +542,7 @@ def getaway_vehicle_handler(action, item, subject):
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     if player["inventory"] == 'necklace':
-      player["inventory"] == 'complete'  
+      player["inventory"] == 'complete'
       printNow("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
     else:
       printNow("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
@@ -542,7 +552,7 @@ def playerLoseScreen():
 
 def playerWinsScreen():
     printNow("\nYou won! \n\nGAME OVER!")
-      
+
 def gameLoop():
     titleMessage()
     welcomeMessage()
@@ -557,13 +567,13 @@ def gameLoop():
             gameOn = False
             playerLoseScreen()
             continue
-        
+
         #See if player has won
         if player["inventory"] == 'complete':
             gameOn = False
             playerWinsScreen()
             continue
-                     
+
         gameCycles += 1
         userString = getUserInput()
         (action, item, subject) = parseInput(userString)
