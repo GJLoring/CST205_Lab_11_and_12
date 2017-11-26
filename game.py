@@ -73,19 +73,19 @@ map = [ [ "office",        "staircase", "hidden"],
         [ "park",          "start",     "getaway_vehicle"]]
 
 office = {
-    "room_description" : "The office is a nice wood paneled room with portraits of stuffy old dudes on the North, West and South walls.  There is a desk with a key on it labeled 'Library_key' . Grab the key and continue on to find the locked chest holding the Catarina necklace.",    
+    "room_description" : "The office is a nice wood paneled room with portraits of stuffy old dudes on the North, West and South walls.  There is a desk with a key on it labeled 'Library_key' . Grab the key and continue on to find the locked chest holding the Catarina necklace.",
     "passable_NESW" : "NYNN",
     "npc" : larry,
     "object" : "library_key"}
 
 staircase = {
     "room_description" : "The staircase is ornate and fancy. It is designed to allow someone to make a grand entrance. The stairs start on the south floor and exit to the west of the top floor. Exiting to the north or east would result in a nasty fall.",
-    "passable_NESW" : "NNYY",
+    "passable_NESW" : "FFYY",
     "npc" : larry,
     "object" : "nothing"}
 
 hidden = {
-    "room_description": "You've found the hidden room. Here lies the Catalina necklace in a locked wooden chest. To open the chest you must first unlock the secret", 
+    "room_description": "You've found the hidden room. Here lies the Catalina necklace in a locked wooden chest. To open the chest you must first unlock the secret",
     "passable_NESW": "NNYN",
     "npc": larry,
     "object": "necklace"}
@@ -97,32 +97,32 @@ billiards = {
     "object": "secret_book"}
 
 ballroom = {
-    "room_description": "The ballroom is filled with 100 guests, all dancing. To the north is the staircase, to the east lies the library, to the west lies the billiards room. You must blend in with the party. Do not get caught as you make your way to the next room.",    
+    "room_description": "The ballroom is filled with 100 guests, all dancing. To the north is the staircase, to the east lies the library, to the west lies the billiards room. You must blend in with the party. Do not get caught as you make your way to the next room.",
     "passable_NESW": "YCYY",
     "npc": larry,
     "object": "nothing"}
 
 library = {
-    "room_description": "The room is the library. The library holds books to the north, south, and west. Along these walls is a special book that leads to a hidden room. Find the book that hisses and slithers and you will find the secret room.",
+    "room_description": "The room is the library. The library holds books along its walls. Along these walls is a special book that leads to a hidden room. Find the book that hisses and slithers and you will find the secret room.",
     "passable_NESW": "CNNY",
     "npc": larry,
     "object": "nothing"}
 
 
 park = {
-    "room_description" : "The park is nice, a good place to take your dog, or to step in something left by somonelses dog. To the north is the back wall of the museum, east leads to the starting position and both south and west lead to the the edge of the game world.",    
+    "room_description" : "The park used to be nice, a good place to take your dog, or to step in something left by someone else's dog.",
     "passable_NESW" : "NYNN",
     "npc" : larry,
     "object" : "nothing"}
 
 start = {
-    "room_description" : "This is the staging area for your heist. To the north is the ballroom. To the west is the park. To the south is the edge of the game world. Your getaway vehicle is to the east.",
+    "room_description" : "This is the staging area for your heist. Your getaway vehicle is to the east.",
     "passable_NESW" : "YYNY",
     "npc" : larry,
     "object" : "nothing"}
 
 getaway_vehicle = {
-    "room_description" : "A 1973 Oldsmobile Delta 88, I wonder if Sam Raimi is directing this heist. Get in! You've won the game!",
+    "room_description" : "A 1973 Oldsmobile Delta 88, I wonder if Sam Raimi is directing this heist. Once you have the necklace, get in to win the game!",
     "passable_NESW" : "NNNY",
     "npc" : larry,
     "object" : "nothing"}
@@ -155,7 +155,7 @@ travel    = [ "go", "walk", "run", "skip", "get", "move", "travel", "head" ]
 actions   = ["get", "take", "steal", "lift", "snatch", "borrow", "use", "open", "close", "examine", "look", "close", "show", "kick"]
 
 directions = [ "left", "right", "forward", "ahead", "back", "up", "down", "north", "south", "east", "west" ]
-items   = ["door", "gun", "safe", "map", "necklace", "key", "secret" ]
+items   = ["door", "gun", "safe", "map", "necklace", "key", "secret", "book" ]
 people = ["self", "dog", "scooby", "larry"]
 
 administrative = ["draw", "debug", "save", "help", "explain", "tutorial", "exit", "quit"]
@@ -343,6 +343,9 @@ def try_to_move_player_to_new_room(DIRECTION_INDEX):
         describeRoom()
     elif passable == 'C':    # C is a closed door
         printNow("You try but the door is closed")
+    elif passable == 'F':    # Fall hazard
+        player["health"] = player["health"] - 50
+        printNow("You tumble down the stairs and lose health")
     else:
         printNow("You can not move in that direction")
 
@@ -422,6 +425,44 @@ def describeRoom():
     currentRoom = player["location"]
     printNow("You are in the %s"%currentRoom)
     printNow("%s\n\n"%rooms[currentRoom]["room_description"])
+    printMoveDirections()
+
+def decodeValidMotionToStrings(index):
+    '''
+    Create a user friendly string to describe why, or why not
+    motion in a given direction is or is not possible
+    '''
+    currentRoom = player["location"]
+    roomBoarder = rooms[currentRoom]["passable_NESW"][index]
+    if roomBoarder == 'N':
+      return ("A wall")
+    elif roomBoarder == 'F':
+      return ("A dangerous edge ")
+    
+    # We should have bailed out if thewere is a wall to the side
+    # this means we are ok to try to look to this side  
+    currentRoomNumber = find_current_room_number()
+    adjacentRoomNumber = find_room_by_relative_direction(index, currentRoomNumber)
+    adjacentRoomName = convert_room_number_to_rooom_name(adjacentRoomNumber)
+
+    if roomBoarder == 'Y':
+    	return adjacentRoomName
+    elif roomBoarder == 'O':
+    	return ("An open door leading to %s"%adjacentRoomName)
+    elif roomBoarder == 'C':    # C is a closed door
+    	return ("An closed door leading to %s"%adjacentRoomName)
+
+def printMoveDirections():
+    '''
+    Display a compase rose type description of each direction and if it is passable
+    '''
+
+    northString =    ("\t\tNorth: %s"%(decodeValidMotionToStrings(NORTH)))
+    printNow(northString)
+    eastWestString = ("West: %s\t\t\tEast: %s"%(decodeValidMotionToStrings(WEST),decodeValidMotionToStrings(EAST)))
+    printNow(eastWestString)
+    southString =    ("\t\tSouth: %s"%(decodeValidMotionToStrings(SOUTH)))
+    printNow(southString)
 
 
 def office_handler(action, item, subject):
@@ -467,7 +508,7 @@ def library_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    if  item == 'book':
+    if item == 'book':
     	library["passable_NESW"] = "YNNY"
     	printNow("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
 
@@ -475,7 +516,9 @@ def park_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    printNow("You really shouldnot be wasting time in the park. Steal the necklace and you can spend the res of your life in a park!\n")
+    printNow("You really shouldnot be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n")
+    printNow("While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n")
+    player["health"] = player["health"] - 50
     describeRoom()
 
 def start_handler(action, item, subject):
@@ -488,9 +531,18 @@ def getaway_vehicle_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    pass
+    if player["inventory"] == 'necklace':
+      player["inventory"] == 'complete'  
+      printNow("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
+    else:
+      printNow("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
 
+def playerLoseScreen():
+    printNow("\nSorry!  You have lost too much health.  Please try again!\n\nGAME OVER!")
 
+def playerWinsScreen():
+    printNow("\nYou won! \n\nGAME OVER!")
+      
 def gameLoop():
     titleMessage()
     welcomeMessage()
@@ -500,6 +552,18 @@ def gameLoop():
     gameCycles = 0
     describeRoom() # Let the player know where they are starting from
     while gameOn:
+        #See if the player died
+        if player["health"] < 0:
+            gameOn = False
+            playerLoseScreen()
+            continue
+        
+        #See if player has won
+        if player["inventory"] == 'complete':
+            gameOn = False
+            playerWinsScreen()
+            continue
+                     
         gameCycles += 1
         userString = getUserInput()
         (action, item, subject) = parseInput(userString)
