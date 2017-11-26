@@ -444,44 +444,53 @@ def office_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    pass
+    if item == 'key':
+    	player["inventory"] = 'key'
 
 def staircase_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    print "Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n"
+    printNow("Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n")
     describeRoom()
 
 def hidden_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    pass
+    if  action == 'take' or action == 'get':
+    	player["inventory"] == 'necklace'
+    	printNow("Wasting no time you grab the necklace and concel it in your jacket.\n")
 
 def billiards_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    pass
+    printNow("Sure you could sit around and play a game by yourself, or you could maybe go steal a necklace.\n")
+    describeRoom()
 
 def ballroom_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    pass
+    if player["inventory"] == 'key' and action == 'open':
+    	ballroom["passable_NESW"] = "YOYY"
+    	printNow("You take a quick glance around the room and then use your key to unlock the library door.\n")
+
 
 def library_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    pass
+    if  action == 'take' and item == 'book':
+    	library["passable_NESW"] = "YNNY"
+    	printNow("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
 
 def park_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    print "You really shouldnot be wasting time in the park.\n"
+    printNow("You really shouldnot be wasting time in the park. Steal the necklace and you can spend the res of your life in a park!\n")
     describeRoom()
 
 def start_handler(action, item, subject):
