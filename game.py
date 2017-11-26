@@ -284,7 +284,6 @@ def getUserInput(promptString = ""):
     userInput = ""
     count = 0
     while userInput == "" and count < EMPTY_ENTERS_TO_BAIL_OUT:
-        #printNow(promptString)
         userInput = requestString(promptString)
         count += 1
 
@@ -398,7 +397,6 @@ def convert_room_number_to_rooom_name(roomNumber):
     for row in map:
         for roomName in row:
             count = count + 1
-            print count
             if roomNumber == count:
                 return roomName
 
