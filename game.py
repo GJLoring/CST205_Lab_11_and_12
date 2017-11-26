@@ -73,56 +73,56 @@ map = [ [ "office",        "staircase", "hidden"],
         [ "park",          "start",     "getaway_vehicle"]]
 
 office = {
-    "room_description" : "The the office is a nice wood paneled room with protraits of stuffy old dudeds on the North, West and South walls.  There is a desk with a key on it labled 'Library_key'",
+    "room_description" : "The office is a nice wood paneled room with portraits of stuffy old dudes on the North, West and South walls.  There is a desk with a key on it labeled 'Library_key' . Grab the key and continue on to find the locked chest holding the Catarina necklace.",    
     "passable_NESW" : "NYNN",
     "npc" : larry,
     "object" : "library_key"}
 
 staircase = {
-    "room_description" : "The saircase is ornaite and fancey designed to allow someone to make a grand entrance.  The stairs start on the south and exit to the west on the top floor.  Trying to exit to the north or east would result in a nasty fall",
+    "room_description" : "The staircase is ornate and fancy. It is designed to allow someone to make a grand entrance. The stairs start on the south floor and exit to the west of the top floor. Exiting to the north or east would result in a nasty fall.",
     "passable_NESW" : "NNYY",
     "npc" : larry,
     "object" : "nothing"}
 
 hidden = {
-    "room_description": "You've found the hidden room. Here lies the Catalina necklace in a locked wooden chest. To open the chest you must first unlock the secret ",
+    "room_description": "You've found the hidden room. Here lies the Catalina necklace in a locked wooden chest. To open the chest you must first unlock the secret", 
     "passable_NESW": "NNYN",
     "npc": larry,
     "object": "necklace"}
 
 billiards = {
-    "room_description": "This is the billiards room. To the north, east and south walls are blocked off.To exit return east. To open the vault type open.",
+    "room_description": "The billiards room is filled with many games, but you won't find what you're looking for here. The north, west and south walls are blocked off. To exit return east. To open the vault type open.",
     "passable_NESW": "NYNN",
     "npc": larry,
     "object": "secret_book"}
 
 ballroom = {
-    "room_description": "You have entered the ballroom. The ballroom is filled with 100 guests, all dancing. To the north is the staircase, to the east lies the library, to the west lies the billiards room. You must blend in with the party. Do not get caught as you make your way to the next room.",
+    "room_description": "The ballroom is filled with 100 guests, all dancing. To the north is the staircase, to the east lies the library, to the west lies the billiards room. You must blend in with the party. Do not get caught as you make your way to the next room.",    
     "passable_NESW": "YCYY",
     "npc": larry,
     "object": "nothing"}
 
 library = {
-    "room_description": "The room is the library. The library holds books to the north, south, and west. Along these walls is a special book that leads to a hidden room. Find the book that hisses and slither and you will find the secret room.",
+    "room_description": "The room is the library. The library holds books to the north, south, and west. Along these walls is a special book that leads to a hidden room. Find the book that hisses and slithers and you will find the secret room.",
     "passable_NESW": "CNNY",
     "npc": larry,
     "object": "nothing"}
 
 
 park = {
-    "room_description" : "The park is nice, a good place to take your dog, or to step in something left by somonelses dog. To the north is the back wall of the museum, east leads to the starting position and both south and west lead to the the edge of the game world",
+    "room_description" : "The park is nice, a good place to take your dog, or to step in something left by somonelses dog. To the north is the back wall of the museum, east leads to the starting position and both south and west lead to the the edge of the game world.",    
     "passable_NESW" : "NYNN",
     "npc" : larry,
     "object" : "nothing"}
 
 start = {
-    "room_description" : "This is the staging area for your heist to the north is the ballroom, west is the park and south is the edge of the game world, your getaway vehicle is to the east.",
+    "room_description" : "This is the staging area for your heist. To the north is the ballroom. To the west is the park. To the south is the edge of the game world. Your getaway vehicle is to the east.",
     "passable_NESW" : "YYNY",
     "npc" : larry,
     "object" : "nothing"}
 
 getaway_vehicle = {
-    "room_description" : "A 1973 Oldsmobile Delta 88, I wonder if Sam Raimi is directing this heist ",
+    "room_description" : "A 1973 Oldsmobile Delta 88, I wonder if Sam Raimi is directing this heist. Get in! You've won the game!",
     "passable_NESW" : "NNNY",
     "npc" : larry,
     "object" : "nothing"}
@@ -172,12 +172,9 @@ def titleMessage():
     return
 
 def welcomeMessage():
-    #printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    #printNow(title)
     printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     printNow("Welcome to The Heist")
     printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    printNow("Type start to begin")
     printNow("Type help to learn how to play")
     printNow("Type exit to leave the game")
     printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -192,17 +189,6 @@ def story():
     printNow("As you go through the mansion you will find clues that lead you to a room with a hidden passage")
     printNow("Find that passage and you will find the necklace")
     return
-
-'''
-def library():
-    printNow("")
-    printNow("You have just entered the library.")
-    printNow("1 - North to book wall")
-    printNow("2 - East to Office door")
-    printNow("3 - West to Ballroom door")
-    printNow("4 - South to Street door")
-    printNow("Choose a direction")
-'''
 
 def parseInput(userString):
     '''
@@ -274,7 +260,7 @@ def find_action_words(userString):
             action = x
     return action
 
-def getUserInput(promptString = ""):
+def getUserInput(promptString = "Which direction do you want to go?"):
     '''
     Prompt the user to type in a command and return a lower case string of what the user typed.
     If the user accidently hits enter for an empty string they will be prompted again.
