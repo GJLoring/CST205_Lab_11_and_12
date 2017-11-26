@@ -489,7 +489,7 @@ def hidden_handler(action, item, subject):
       return
 
     if action == 'take' or action == 'get':
-    	player["inventory"] == 'necklace'
+    	player["inventory"] = 'necklace'
     	printNow("Wasting no time you grab the necklace and concel it in your jacket.\n")
 
 def billiards_handler(action, item, subject):
@@ -542,7 +542,7 @@ def getaway_vehicle_handler(action, item, subject):
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     if player["inventory"] == 'necklace':
-      player["inventory"] == 'complete'
+      player["inventory"] = 'complete'
       printNow("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
     else:
       printNow("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
@@ -554,6 +554,9 @@ def playerWinsScreen():
     printNow("\nYou won! \n\nGAME OVER!")
 
 def gameLoop():
+    '''
+    Main Game loop
+    '''
     titleMessage()
     welcomeMessage()
     story()
@@ -613,8 +616,6 @@ def gameLoop():
         else:
             raise "Error no room to handle events"
 
-
-    debugLog("gameLoop", "exit", ("gameOn:\t%s\tgameCycles:\t%s"%(gameOn,gameCycles)))
 
 
 
