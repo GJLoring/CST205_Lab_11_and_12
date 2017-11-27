@@ -439,7 +439,7 @@ def decodeValidMotionToStrings(index):
     elif roomBoarder == 'F':
       return ("A dangerous edge ")
 
-    # We should have bailed out if thewere is a wall to the side
+    # We should have bailed out if there is a wall to the side
     # this means we are ok to try to look to this side
     currentRoomNumber = find_current_room_number()
     adjacentRoomNumber = find_room_by_relative_direction(index, currentRoomNumber)
@@ -490,7 +490,7 @@ def hidden_handler(action, item, subject):
 
     if action == 'take' or action == 'get':
     	player["inventory"] = 'necklace'
-    	printNow("Wasting no time you grab the necklace and concel it in your jacket.\n")
+    	printNow("Wasting no time you grab the necklace and conceal it in your jacket.\n")
 
 def billiards_handler(action, item, subject):
     '''
@@ -502,7 +502,7 @@ def billiards_handler(action, item, subject):
         return
 
       player["inventory"] = 'secret'
-      printNow("Opening the vault yo find the secret to the chest with the necklace.\n")
+      printNow("Opening the vault to find the secret to the chest with the necklace.\n")
 
 def ballroom_handler(action, item, subject):
     '''
@@ -526,7 +526,7 @@ def park_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    printNow("You really shouldnot be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n")
+    printNow("You really should not be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n")
     printNow("While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n")
     player["health"] = player["health"] - 50
     describeRoom()
