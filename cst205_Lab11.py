@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # CST205 Lab 11
-# November 22, 2017
+# November 26, 2017
 #
 # Team 5, Hopper
 #  Jose Garcia Ledesma
@@ -8,27 +8,11 @@
 #  Christian Guerrero
 #  Gabriel Loring
 
-
 # Test for Lab 11 bullet 1, Title Screen
 title = '''
 The Heist
-
 An interactive test adventure by: Team 5, Hopper
 Jose Garcia Ledesma  *  Grace Alvarez  *  Christian Guerrero  *  Gabriel Loring
-
-'''
-
-'''
-Objective of the game is the find the Catalina necklace, worth 10 million.
-The necklace is hidden in a secret chest.
-Player takes 2 actions.
-    1.) Player can move North, East, South, or West
-    2.) and player can open door
-If player does not find hidden necklace in the room entered return no jewels found.
-Move to next room and repeat until jewels are found.
-To win the game you must successfully find the Catalina necklace, exit the mansion, and get inside the getaway vehicle.
-
-
 '''
 
 # Globals to cover movment directions
@@ -55,7 +39,7 @@ larry = {
     "inventory": "nothing"}
 
 
-# OK apologies, the map is stored in triplicate!
+# The map is stored in triplicate!
 #
 # the first copy of the map is in the list map
 # this is a list of rows and columns to lay out the "rooms" and their
@@ -66,8 +50,8 @@ larry = {
 # I have a place holder for a NPC and object
 #
 # The third copy of the map is in the rooms dictionary.  This lets me look
-# up a specific rooms dictionary using its name.  not sure how happy I am with
-# this, it is super hacky
+# up a specific rooms dictionary using its name.
+
 map = [ [ "office",        "staircase", "hidden"],
         [ "billiards",     "ballroom",  "library"],
         [ "park",          "start",     "getaway_vehicle"]]
@@ -83,12 +67,6 @@ staircase = {
     "passable_NESW" : "FFYY",
     "npc" : larry,
     "object" : "nothing"}
-
-hidden = {
-    "room_description": "You've found the hidden room. Here lies the Catalina necklace in a locked wooden chest. To open the chest you must first unlock the secret",
-    "passable_NESW": "NNYN",
-    "npc": larry,
-    "object": "necklace"}
 
 billiards = {
     "room_description": "The billiards room is filled with many games, but you won't find what you're looking for here. To open the vault type open.",
@@ -120,13 +98,6 @@ start = {
     "passable_NESW" : "YYNY",
     "npc" : larry,
     "object" : "nothing"}
-
-getaway_vehicle = {
-    "room_description" : "A 1973 Oldsmobile Delta 88, I wonder if Sam Raimi is directing this heist. Once you have the necklace, get and tell the driver to leave to win the game!",
-    "passable_NESW" : "NNNY",
-    "npc" : larry,
-    "object" : "nothing"}
-
 
 rooms = {
     "office": office,
@@ -164,8 +135,6 @@ def debugLog(functionName, action, message):
     pass
     if functionName == "debugLog":
         printNow(debugLog.string)
-    #debugLog.counter +=1
-    #debugLog.string = ("%s\n%04d\t%s:\t%s:\t%s"%(debugLog.string, debugLog.counter, functionName, action, message))
 
 def titleMessage():
     printNow(title)
@@ -197,7 +166,6 @@ def parseInput(userString):
     Give  Key Larry
     it also does not expect that all elements will be present
     Walk West
-
     It does this by looking at all of the word lists and seeing if there is a match in the user input.
     If multiple matches are found the last match is the one returned
     '''
@@ -276,7 +244,6 @@ def getUserInput(promptString = "Which direction do you want to go?"):
     caseCorrected = userInput.lower()
     return caseCorrected
 
-
 def isAdministrative(action="", item="", subject=""):
     if action == 'debug':
         return True
@@ -291,7 +258,6 @@ def isAdministrative(action="", item="", subject=""):
         return True
 
     return False
-
 
 def tutorial():
     printNow("\n\nTutorial\n\n")
@@ -343,12 +309,10 @@ def try_to_move_player_to_new_room(DIRECTION_INDEX):
         describeRoom()
     elif passable == 'C':    # C is a closed door
         printNow("You try but the door is closed")
-    elif passable == 'F':    # Fall hazard
-        player["health"] = player["health"] - 50
-        printNow("You tumble down the stairs and lose health")
+    elif passable == 'F':    # Fall hazard        
+        printNow("You tumble down the stairs")
     else:
         printNow("You can not move in that direction")
-
 
 def convert_direction_to_index(item):
     '''
@@ -439,7 +403,7 @@ def decodeValidMotionToStrings(index):
     elif roomBoarder == 'F':
       return ("A dangerous edge ")
 
-    # We should have bailed out if thewere is a wall to the side
+    # We should have bailed out if there is a wall to the side
     # this means we are ok to try to look to this side
     currentRoomNumber = find_current_room_number()
     adjacentRoomNumber = find_room_by_relative_direction(index, currentRoomNumber)
@@ -480,18 +444,6 @@ def staircase_handler(action, item, subject):
     printNow("Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n")
     describeRoom()
 
-def hidden_handler(action, item, subject):
-    '''
-    The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
-    '''
-    if player["inventory"] != 'secret':
-      printNow('You must first have the secret to the chest')
-      return
-
-    if action == 'take' or action == 'get':
-    	player["inventory"] = 'necklace'
-    	printNow("Wasting no time you grab the necklace and concel it in your jacket.\n")
-
 def billiards_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
@@ -502,7 +454,7 @@ def billiards_handler(action, item, subject):
         return
 
       player["inventory"] = 'secret'
-      printNow("Opening the vault yo find the secret to the chest with the necklace.\n")
+      printNow("Opening the vault to find the secret to the chest with the necklace.\n")
 
 def ballroom_handler(action, item, subject):
     '''
@@ -526,9 +478,7 @@ def park_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    printNow("You really shouldnot be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n")
-    printNow("While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n")
-    player["health"] = player["health"] - 50
+    printNow("You really should not be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n")
     describeRoom()
 
 def start_handler(action, item, subject):
@@ -536,22 +486,6 @@ def start_handler(action, item, subject):
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     pass
-
-def getaway_vehicle_handler(action, item, subject):
-    '''
-    The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
-    '''
-    if player["inventory"] == 'necklace':
-      player["inventory"] = 'complete'
-      printNow("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
-    else:
-      printNow("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
-
-def playerLoseScreen():
-    printNow("\nSorry!  You have lost too much health.  Please try again!\n\nGAME OVER!")
-
-def playerWinsScreen():
-    printNow("\nYou won! \n\nGAME OVER!")
 
 def gameLoop():
     '''
@@ -565,18 +499,7 @@ def gameLoop():
     gameCycles = 0
     describeRoom() # Let the player know where they are starting from
     while gameOn:
-        #See if the player died
-        if player["health"] < 0:
-            gameOn = False
-            playerLoseScreen()
-            continue
-
-        #See if player has won
-        if player["inventory"] == 'complete':
-            gameOn = False
-            playerWinsScreen()
-            continue
-
+        
         gameCycles += 1
         userString = getUserInput()
         (action, item, subject) = parseInput(userString)
@@ -599,8 +522,6 @@ def gameLoop():
             office_handler(action, item, subject)
         elif player["location"] == "staircase":
             staircase_handler(action, item, subject)
-        elif player["location"] == "hidden":
-            hidden_handler(action, item, subject)
         elif player["location"] == "billiards":
             billiards_handler(action, item, subject)
         elif player["location"] == "ballroom":
@@ -611,16 +532,7 @@ def gameLoop():
             park_handler(action, item, subject)
         elif player["location"] == "start":
             start_handler(action, item, subject)
-        elif player["location"] == "getaway_vehicle":
-            getaway_vehicle_handler(action, item, subject)
         else:
             raise "Error no room to handle events"
 
-
-
-
-
-
-
 gameLoop()
-
