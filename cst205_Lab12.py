@@ -361,7 +361,7 @@ def convert_direction_to_index(item):
         DIRECTION_INDEX = EAST
     elif item == "south" or item == "down":
         DIRECTION_INDEX = SOUTH
-    elif item == "west" or directioitemns == "left":
+    elif item == "west" or item == "left":
         DIRECTION_INDEX = WEST
     return DIRECTION_INDEX
 
