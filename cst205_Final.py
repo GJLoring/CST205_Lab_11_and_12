@@ -10,6 +10,58 @@
 
 ##I'd like to create a graphic for the Title Screen when we start the game - Grace
 
+# Request, could we define a standard game screen size.  Maybe something like
+# 800 x 600 or 1024 x 768 so that the images will fit neatly with title bar and such
+# on any computer including laptops
+
+# To follow up on the note from Grace above lets create a set of asset lists ( as dictionaries
+# Just update the file names as you go. See note about optionals half way down.
+gameScreenImages = {
+	"title" : "placeholder.jpg",
+	"office" : "placeholder.jpg",
+	"staircase" : "placeholder.jpg",
+	"hidden" : "placeholder.jpg",
+    "billiards" : "placeholder.jpg",
+    "ballroom" : "placeholder.jpg",
+    "library" : "placeholder.jpg",
+    "park" : "placeholder.jpg",
+    "start" : "placeholder.jpg",
+    "getaway_vehicle" : "placeholder.jpg",
+    "introduction" : "placeholder.jpg",  # If we want or have time for events we can do some, all or none from here down
+    "win" : "placeholder.jpg",
+    "loose" : "placeholder.jpg",
+    "get_key" : "placeholder.jpg",
+    "get_secret" : "placeholder.jpg",
+    "get_necklace" : "placeholder.jpg",
+    "open_book_case" : "placeholder.jpg",
+    "open_door" : "placeholder.jpg",
+    "fall_from_stairs" : "placeholder.jpg",
+    "get_mugged" : "placeholder.jpg"
+}
+
+gameSounds = {
+	"title" : "placeholder.wav",
+	"office" : "placeholder.wav",
+	"staircase" : "placeholder.wav",
+	"hidden" : "placeholder.wav",
+    "billiards" : "placeholder.wav",
+    "ballroom" : "placeholder.wav",
+    "library" : "placeholder.wav",
+    "park" : "placeholder.wav",
+    "start" : "placeholder.wav",
+    "getaway_vehicle" : "placeholder.wav",
+    "introduction" : "placeholder.wav",  # If we want or have time for events we can do some, all or none from here down
+    "win" : "placeholder.wav",
+    "loose" : "placeholder.wav",
+    "get_key" : "placeholder.wav",
+    "get_secret" : "placeholder.wav",
+    "get_necklace" : "placeholder.wav",
+    "open_book_case" : "placeholder.wav",
+    "open_door" : "placeholder.wav",
+    "fall_from_stairs" : "placeholder.wav",
+    "get_mugged" : "placeholder.wav"
+}
+
 # Test for Lab 11 bullet 1, Title Screen
 title = '''
 The Heist
