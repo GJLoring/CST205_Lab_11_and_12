@@ -91,6 +91,29 @@ MAP_WIDTH = 3
 # Global to describe how many empty commands before it assumed the player wants to quit
 EMPTY_ENTERS_TO_BAIL_OUT = 3
 
+GAME_OUTPUT_CANVAS_WIDTH = 1024
+GAME_OUTPUT_CANVAS_HEIGTH = 768
+
+INVENTORY_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
+INVENTORY_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
+
+HEALTH_BAR_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
+HEALTH_BAR_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
+HEALTH_BAR_SIZE_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 90
+HEALTH_BAR_SIZE_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 5
+
+MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
+MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
+
+TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
+TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
+
+MAX_TEXT_WIDTH_IN_CHARS = 50
+
+TEXT_COLOR = 0
+TEXT_SHADOW = 0
+MAP_COLOR = 0
+
 # A global dictionary to hold player attributes
 player = {
     "health" :  100,
@@ -215,6 +238,85 @@ def debugLog(functionName, action, message):
         printNow(debugLog.string)
     #debugLog.counter +=1
     #debugLog.string = ("%s\n%04d\t%s:\t%s:\t%s"%(debugLog.string, debugLog.counter, functionName, action, message))
+
+def drawMap(x,y,color):
+  '''
+  Draw on screen map to help the player navigate the game
+  '''
+  pass
+  
+def drawHealthBar(x1,y1,x2,y2,value):
+  '''
+  Draw on screen health indicator
+  '''  
+  pass
+  
+def drawInventory(x,y):
+  '''
+  Draw on screen player inventory
+  '''
+  pass
+
+def loadRoomImage(fileName):
+  '''
+  Draw on screen image into game canvas, center left to right, and align to top
+  '''
+  pass
+
+def createBlankCanvas(width,height): 
+  pass
+    
+    
+def drawText(x,y,maxWidth,color,shadow,textString):
+  '''
+  Draw text on the screen to communicate with the user.  Draw text twice
+  once in shadow color and then -1,-1 pixel offest in normal color
+  '''
+  pass
+  
+def playRoomSound():
+  pass
+  
+def refreshScreen():
+  pass
+
+  
+def updateScreen():
+  '''
+  Communicate Change in game state with the user
+  '''
+  tempHealthValue = 75
+  tempRoomFileName = ""
+  tempTextString = "The quick brown fox jumped over the lazy dogs. Display text to text render function"
+  
+  createBlankCanvas( GAME_OUTPUT_CANVAS_WIDTH,
+                     GAME_OUTPUT_CANVAS_HEIGTH)
+                    
+  loadRoomImage(  tempRoomFileName)
+  
+  drawInventory(  INVENTORY_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
+                  INVENTORY_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT)
+                  
+  drawHealthBar(  HEALTH_BAR_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
+                  HEALTH_BAR_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
+                  HEALTH_BAR_SIZE_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
+                  HEALTH_BAR_SIZE_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
+                  tempHealthValue)
+                  
+  drawMap(        MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
+                  MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
+                  MAP_COLOR)
+                  
+  drawText(       TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
+                  TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
+                  MAX_TEXT_WIDTH_IN_CHARS,
+                  TEXT_COLOR,
+                  TEXT_SHADOW,
+                  tempTextString)
+                  
+  playRoomSound()
+  refreshScreen()
+ 
 
 def titleMessage():
     printNow(title)
