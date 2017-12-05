@@ -1,6 +1,6 @@
 #!/usr/bin/python
-# CST205 Final
-# November 30, 2017
+# CST205 Lab 13
+# December 04, 2017
 #
 # Team 5, Hopper
 #  Jose Garcia Ledesma
@@ -8,65 +8,14 @@
 #  Christian Guerrero
 #  Gabriel Loring
 
-##I'd like to create a graphic for the Title Screen when we start the game - Grace
-
-# Request, could we define a standard game screen size.  Maybe something like
-# 800 x 600 or 1024 x 768 so that the images will fit neatly with title bar and such
-# on any computer including laptops
-
-# To follow up on the note from Grace above lets create a set of asset lists ( as dictionaries
-# Just update the file names as you go. See note about optionals half way down.
-gameScreenImages = {
-	"title" : "placeholder.jpg",
-	"office" : "placeholder.jpg",
-	"staircase" : "placeholder.jpg",
-	"hidden" : "placeholder.jpg",
-    "billiards" : "placeholder.jpg",
-    "ballroom" : "placeholder.jpg",
-    "library" : "placeholder.jpg",
-    "park" : "placeholder.jpg",
-    "start" : "placeholder.jpg",
-    "getaway_vehicle" : "placeholder.jpg",
-    "introduction" : "placeholder.jpg",  # If we want or have time for events we can do some, all or none from here down
-    "win" : "placeholder.jpg",
-    "loose" : "placeholder.jpg",
-    "get_key" : "placeholder.jpg",
-    "get_secret" : "placeholder.jpg",
-    "get_necklace" : "placeholder.jpg",
-    "open_book_case" : "placeholder.jpg",
-    "open_door" : "placeholder.jpg",
-    "fall_from_stairs" : "placeholder.jpg",
-    "get_mugged" : "placeholder.jpg"
-}
-
-gameSounds = {
-	"title" : "placeholder.wav",
-	"office" : "placeholder.wav",
-	"staircase" : "placeholder.wav",
-	"hidden" : "placeholder.wav",
-    "billiards" : "placeholder.wav",
-    "ballroom" : "placeholder.wav",
-    "library" : "placeholder.wav",
-    "park" : "placeholder.wav",
-    "start" : "placeholder.wav",
-    "getaway_vehicle" : "placeholder.wav",
-    "introduction" : "placeholder.wav",  # If we want or have time for events we can do some, all or none from here down
-    "win" : "placeholder.wav",
-    "loose" : "placeholder.wav",
-    "get_key" : "placeholder.wav",
-    "get_secret" : "placeholder.wav",
-    "get_necklace" : "placeholder.wav",
-    "open_book_case" : "placeholder.wav",
-    "open_door" : "placeholder.wav",
-    "fall_from_stairs" : "placeholder.wav",
-    "get_mugged" : "placeholder.wav"
-}
 
 # Test for Lab 11 bullet 1, Title Screen
 title = '''
 The Heist
+
 An interactive test adventure by: Team 5, Hopper
 Jose Garcia Ledesma  *  Grace Alvarez  *  Christian Guerrero  *  Gabriel Loring
+
 '''
 
 '''
@@ -78,6 +27,8 @@ Player takes 2 actions.
 If player does not find hidden necklace in the room entered return no jewels found.
 Move to next room and repeat until jewels are found.
 To win the game you must successfully find the Catalina necklace, exit the mansion, and get inside the getaway vehicle.
+
+
 '''
 
 # Globals to cover movment directions
@@ -90,30 +41,6 @@ MAP_WIDTH = 3
 
 # Global to describe how many empty commands before it assumed the player wants to quit
 EMPTY_ENTERS_TO_BAIL_OUT = 3
-
-GAME_OUTPUT_CANVAS_COLOR = black
-GAME_OUTPUT_CANVAS_WIDTH = 1024
-GAME_OUTPUT_CANVAS_HEIGTH = 768
-
-INVENTORY_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
-INVENTORY_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
-
-HEALTH_BAR_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
-HEALTH_BAR_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
-HEALTH_BAR_SIZE_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 90
-HEALTH_BAR_SIZE_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 5
-
-MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
-MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
-
-TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
-TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
-
-MAX_TEXT_WIDTH_IN_CHARS = 50
-
-TEXT_COLOR = 0
-TEXT_SHADOW = 0
-MAP_COLOR = 0
 
 # A global dictionary to hold player attributes
 player = {
@@ -233,8 +160,6 @@ people = ["self", "dog", "scooby", "larry"]
 
 administrative = ["draw", "debug", "save", "help", "explain", "tutorial", "exit", "quit"]
 
-gameScreen = 0
-
 def debugLog(functionName, action, message):
     pass
     if functionName == "debugLog":
@@ -242,136 +167,29 @@ def debugLog(functionName, action, message):
     #debugLog.counter +=1
     #debugLog.string = ("%s\n%04d\t%s:\t%s:\t%s"%(debugLog.string, debugLog.counter, functionName, action, message))
 
-def openImage(imageFileName="placeholder.jpg"):
-  '''
-  Allow us to import image files from the programs image resource
-  directory.  However since we do not know where on a users computer
-  this program will be launched from, we first get our programs dir
-  then join the audiopath so the user does not need to interact with
-  a file or directory selection box
-  '''
-  import os
-  dir_path = os.path.dirname(os.path.realpath(__file__))
-  mediaImagesDir = os.path.join(dir_path, "images")
-  setMediaPath(mediaImagesDir)
-  imageObject = makePicture(imageFileName)
-  return imageObject
-
-def openSound(soundFileName="placeholder.wav"):
-  '''
-  Allow us to import audio files from the programs audio resource
-  directory.  However since we do not know where on a users computer
-  this program will be launched from, we first get our programs dir
-  then join the audiopath so the user does not need to interact with
-  a file or directory selection box
-  '''
-  import os
-  dir_path = os.path.dirname(os.path.realpath(__file__))
-  mediaImagesDir = os.path.join(dir_path, "audio")
-  setMediaPath(mediaImagesDir)
-  soundObject = makeSound(soundFileName)
-  return soundObject
-
-def drawMap(x,y,color):
-  '''
-  Draw on screen map to help the player navigate the game
-  '''
-  pass
-
-def drawHealthBar(x1,y1,x2,y2,value):
-  '''
-  Draw on screen health indicator
-  '''
-  pass
-
-def drawInventory(x,y):
-  '''
-  Draw on screen player inventory
-  '''
-  pass
-
-def loadRoomImage():
-  '''
-  Draw on screen image into game canvas, center left to right, and align to top
-  '''
-  gameScreen = openImage(imageFileName=gameScreenImages[player["location"]])
-  return gameScreen
-
-def createBlankCanvas(width,height):
-  pass
-
-
-def drawText(x,y,maxWidth,color,shadow,textString):
-  '''
-  Draw text on the screen to communicate with the user.  Draw text twice
-  once in shadow color and then -1,-1 pixel offest in normal color
-  '''
-  pass
-
-def playRoomSound():
-  pass
-
-def refreshScreen():
-  pass
-
-
-def updateScreen(ouputTextString):
-  '''
-  Communicate Change in game state with the user
-  '''
-  tempHealthValue = 75
-
-  createBlankCanvas( GAME_OUTPUT_CANVAS_WIDTH,
-                     GAME_OUTPUT_CANVAS_HEIGTH)
-
-  gameScreen = loadRoomImage()
-
-  drawInventory(  INVENTORY_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  INVENTORY_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT)
-
-  drawHealthBar(  HEALTH_BAR_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  HEALTH_BAR_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  HEALTH_BAR_SIZE_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  HEALTH_BAR_SIZE_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  tempHealthValue)
-
-  drawMap(        MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  MAP_COLOR)
-
-  drawText(       TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  MAX_TEXT_WIDTH_IN_CHARS,
-                  TEXT_COLOR,
-                  TEXT_SHADOW,
-                  ouputTextString)
-
-  playRoomSound()
-  refreshScreen()
-  repaint(gameScreen)
-
-
 def titleMessage():
     printNow(title)
     return
 
 def welcomeMessage():
-    printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    printNow("Welcome to The Heist")
-    printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    printNow("Type help to learn how to play")
-    printNow("Type exit to leave the game")
-    printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    welcomString = "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+    welcomString = welcomString + "Welcome to The Heist\n"
+    welcomString = welcomString + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+    welcomString = welcomString + "Type help to learn how to play\n"
+    welcomString = welcomString + "Type exit to leave the game\n"
+    welcomString = welcomString + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+    showInformation(welcomString)
     return
 
 def story():
-    printNow("Larry is on a mission to find the Catalina necklace (worth 10 million).")
-    printNow("He has studied the blueprints to the PyCharm Mansion.")
-    printNow("A ball is being thrown at the PyCharm Mansion tonight.")
-    printNow("Larry is entering the ball under the alias Jonathon Windsor")
-    printNow("You must help Larry find the Catalina necklace, but be careful not to get caught.")
-    printNow("As you go through the mansion you will find clues that lead you to a room with a hidden passage")
-    printNow("Find that passage and you will find the necklace")
+    storyString = "Larry is on a mission to find the Catalina necklace (worth 10 million).\n"
+    storyString = storyString + "He has studied the blueprints to the PyCharm Mansion.\n"
+    storyString = storyString + "A ball is being thrown at the PyCharm Mansion tonight.\n"
+    storyString = storyString + "Larry is entering the ball under the alias Jonathon Windsor\n"
+    storyString = storyString + "You must help Larry find the Catalina necklace, but be careful not to get caught.\n"
+    storyString = storyString + "As you go through the mansion you will find clues that lead you to a room with a hidden passage\n"
+    storyString = storyString + "Find that passage and you will find the necklace\n"
+    showInformation(storyString)
     return
 
 def parseInput(userString):
@@ -381,6 +199,7 @@ def parseInput(userString):
     Give  Key Larry
     it also does not expect that all elements will be present
     Walk West
+
     It does this by looking at all of the word lists and seeing if there is a match in the user input.
     If multiple matches are found the last match is the one returned
     '''
@@ -492,7 +311,7 @@ def tutorial():
     printNow(administrative)
 
 
-def drawMap_depricated():
+def drawMap():
     canvas = "+---------------+---------------+---------------+\n"
     for row in map:
         canvas = canvas + "|"
@@ -709,8 +528,9 @@ def park_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    printNow("You really should not be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n")
-    printNow("While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n")
+    msgString = "You really should not be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n"
+    msgString = msgString + "While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n"
+    printNow(msgString)
     player["health"] = player["health"] - 50
     describeRoom()
 
@@ -718,7 +538,6 @@ def start_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    updateScreen("Game start")
     pass
 
 def getaway_vehicle_handler(action, item, subject):
@@ -731,29 +550,22 @@ def getaway_vehicle_handler(action, item, subject):
     else:
       printNow("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
 
-def playerLoseScreen():
-    printNow("\nSorry!  You have lost too much health.  Please try again!\n\nGAME OVER!")
+def playerLoseScreen(playerName):
+    msgString = "\nSorry! %s You have lost too much health.  Please try again!\n\nGAME OVER!"%(playerName)
+    showInformation(msgString)
 
-def playerWinsScreen():
-    printNow("\nYou won! \n\nGAME OVER!")
-
-def setupGame():
-  gameScreen = makeEmptyPicture(GAME_OUTPUT_CANVAS_WIDTH,
-                                GAME_OUTPUT_CANVAS_HEIGTH,
-                                GAME_OUTPUT_CANVAS_COLOR)
-
-  show(gameScreen)
-
+def playerWinsScreen(playerName):
+    msgString = "\nYou won %s! \n\nGAME OVER!"%(playerName)
+    showInformation(msgString)
 
 def gameLoop():
     '''
     Main Game loop
     '''
-    setupGame()
     titleMessage()
     welcomeMessage()
     story()
-    debugLog("gameLoop", "start", "")
+    playerName = requestString("Please enter your name")
     gameOn = True
     gameCycles = 0
     describeRoom() # Let the player know where they are starting from
@@ -761,13 +573,13 @@ def gameLoop():
         #See if the player died
         if player["health"] < 0:
             gameOn = False
-            playerLoseScreen()
+            playerLoseScreen(playerName)
             continue
 
         #See if player has won
         if player["inventory"] == 'complete':
             gameOn = False
-            playerWinsScreen()
+            playerWinsScreen(playerName)
             continue
 
         gameCycles += 1
@@ -812,5 +624,8 @@ def gameLoop():
 
 
 
-# Automatically Start the game for the player
+
+
+
 gameLoop()
+
