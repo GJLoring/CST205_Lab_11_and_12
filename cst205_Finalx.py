@@ -16,14 +16,11 @@
 
 # To follow up on the note from Grace above lets create a set of asset lists ( as dictionaries
 # Just update the file names as you go. See note about optionals half way down.
-
-import os
-
 gameScreenImages = {
-    "title" : "placeholder.jpg",
-    "office" : "placeholder.jpg",
-    "staircase" : "placeholder.jpg",
-    "hidden" : "placeholder.jpg",
+	"title" : "placeholder.jpg",
+	"office" : "placeholder.jpg",
+	"staircase" : "placeholder.jpg",
+	"hidden" : "placeholder.jpg",
     "billiards" : "placeholder.jpg",
     "ballroom" : "placeholder.jpg",
     "library" : "placeholder.jpg",
@@ -43,10 +40,10 @@ gameScreenImages = {
 }
 
 gameSounds = {
-    "title" : "placeholder.wav",
-    "office" : "placeholder.wav",
-    "staircase" : "placeholder.wav",
-    "hidden" : "placeholder.wav",
+	"title" : "placeholder.wav",
+	"office" : "placeholder.wav",
+	"staircase" : "placeholder.wav",
+	"hidden" : "placeholder.wav",
     "billiards" : "placeholder.wav",
     "ballroom" : "placeholder.wav",
     "library" : "placeholder.wav",
@@ -81,8 +78,6 @@ Player takes 2 actions.
 If player does not find hidden necklace in the room entered return no jewels found.
 Move to next room and repeat until jewels are found.
 To win the game you must successfully find the Catalina necklace, exit the mansion, and get inside the getaway vehicle.
-
-
 '''
 
 # Globals to cover movment directions
@@ -238,9 +233,7 @@ people = ["self", "dog", "scooby", "larry"]
 
 administrative = ["draw", "debug", "save", "help", "explain", "tutorial", "exit", "quit"]
 
-gameScreen = makeEmptyPicture(GAME_OUTPUT_CANVAS_WIDTH,
-                              GAME_OUTPUT_CANVAS_HEIGTH,
-                              GAME_OUTPUT_CANVAS_COLOR)
+gameScreen = 0
 
 def debugLog(functionName, action, message):
     pass
@@ -257,6 +250,7 @@ def openImage(imageFileName="placeholder.jpg"):
   then join the audiopath so the user does not need to interact with
   a file or directory selection box
   '''
+  import os
   dir_path = os.path.dirname(os.path.realpath(__file__))
   mediaImagesDir = os.path.join(dir_path, "images")
   setMediaPath(mediaImagesDir)
@@ -271,6 +265,7 @@ def openSound(soundFileName="placeholder.wav"):
   then join the audiopath so the user does not need to interact with
   a file or directory selection box
   '''
+  import os
   dir_path = os.path.dirname(os.path.realpath(__file__))
   mediaImagesDir = os.path.join(dir_path, "audio")
   setMediaPath(mediaImagesDir)
@@ -314,15 +309,19 @@ def pyCopy(source, target, targetX, targetY):
 
   return target
 
-def loadRoomImage():
+def loadRoomImage(gameScreen):
   '''
   Draw on screen image into game canvas, center left to right, and align to top
   '''
   room = openImage(imageFileName=gameScreenImages[player["location"]])
   pyCopy(room, gameScreen, targetX=0, targetY=0)
-  return
+  return gameScreen
 
-def drawText(x,y,maxWidth,color,shadow,textString):
+def createBlankCanvas(width,height):
+  pass
+
+
+def drawText(gameScreen, x,y,maxWidth,color,shadow,textString):
   '''
   Draw text on the screen to communicate with the user.  Draw text twice
   once in shadow color and then -1,-1 pixel offest in normal color
@@ -331,22 +330,26 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   ypos = int(GAME_OUTPUT_CANVAS_WIDTH *  (float(x) / 100))
   xpos = int(GAME_OUTPUT_CANVAS_HEIGTH * (float(x) / 100))
   style = makeStyle("Comic Sans", Font.BOLD, 24)
-  addTextWithStyle(gameScreen, xpos, ypos, textString, style, color)
-  return
+  gameScreen = addTextWithStyle(gameScreen, xpos, ypos, textString, style, color)
+  return gameScreen
 
 def playRoomSound():
-  room = openSound(soundFileName = gameSounds[player["location"]])
+  pass
 
 def refreshScreen():
-  show(gameScreen)
+  pass
 
-def updateScreen(ouputTextString):
+
+def updateScreen(gameScreen, ouputTextString):
   '''
   Communicate Change in game state with the user
   '''
   tempHealthValue = 75
 
-  loadRoomImage()
+  createBlankCanvas( GAME_OUTPUT_CANVAS_WIDTH,
+                     GAME_OUTPUT_CANVAS_HEIGTH)
+
+  gameScreen = loadRoomImage(gameScreen)
 
   drawInventory(  INVENTORY_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
                   INVENTORY_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT)
@@ -360,17 +363,19 @@ def updateScreen(ouputTextString):
   drawMap(        MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
                   MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
                   MAP_COLOR)
-
-  drawText(       TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  MAX_TEXT_WIDTH_IN_CHARS,
-                  TEXT_COLOR,
-                  TEXT_SHADOW,
-                  ouputTextString)
-
-  print type(gameScreen)
+  '''
+  gameScreen = drawText(    gameScreen,
+  				  			TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
+                  			TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
+                  			MAX_TEXT_WIDTH_IN_CHARS,
+                  			TEXT_COLOR,
+                  			TEXT_SHADOW,
+                  			ouputTextString)
+  '''
   playRoomSound()
   refreshScreen()
+  print type(gameScreen)
+  show(gameScreen)
 
 
 def titleMessage():
@@ -378,24 +383,22 @@ def titleMessage():
     return
 
 def welcomeMessage():
-    welcomString = "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-    welcomString = welcomString + "Welcome to The Heist\n"
-    welcomString = welcomString + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-    welcomString = welcomString + "Type help to learn how to play\n"
-    welcomString = welcomString + "Type exit to leave the game\n"
-    welcomString = welcomString + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-    showInformation(welcomString)
+    printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    printNow("Welcome to The Heist")
+    printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    printNow("Type help to learn how to play")
+    printNow("Type exit to leave the game")
+    printNow("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     return
 
 def story():
-    storyString = "Larry is on a mission to find the Catalina necklace (worth 10 million).\n"
-    storyString = storyString + "He has studied the blueprints to the PyCharm Mansion.\n"
-    storyString = storyString + "A ball is being thrown at the PyCharm Mansion tonight.\n"
-    storyString = storyString + "Larry is entering the ball under the alias Jonathon Windsor\n"
-    storyString = storyString + "You must help Larry find the Catalina necklace, but be careful not to get caught.\n"
-    storyString = storyString + "As you go through the mansion you will find clues that lead you to a room with a hidden passage\n"
-    storyString = storyString + "Find that passage and you will find the necklace\n"
-    showInformation(storyString)
+    printNow("Larry is on a mission to find the Catalina necklace (worth 10 million).")
+    printNow("He has studied the blueprints to the PyCharm Mansion.")
+    printNow("A ball is being thrown at the PyCharm Mansion tonight.")
+    printNow("Larry is entering the ball under the alias Jonathon Windsor")
+    printNow("You must help Larry find the Catalina necklace, but be careful not to get caught.")
+    printNow("As you go through the mansion you will find clues that lead you to a room with a hidden passage")
+    printNow("Find that passage and you will find the necklace")
     return
 
 def parseInput(userString):
@@ -516,7 +519,7 @@ def tutorial():
     printNow(administrative)
 
 
-def drawMap():
+def drawMap_depricated():
     canvas = "+---------------+---------------+---------------+\n"
     for row in map:
         canvas = canvas + "|"
@@ -528,7 +531,7 @@ def drawMap():
     printNow(canvas)
 
 
-def isTravelCommand(action, item, subject):
+def isTravelCommand(action, item, subject, gameScreen):
     '''
     Check if the user command is travel or player motion related.  If it is and the motion is possible
     move the player, otherwise return
@@ -625,12 +628,13 @@ def find_room_by_relative_direction(direction, currentRoomNumber):
 
     return newRoom
 
-def describeRoom():
+def describeRoom(gameScreen):
     '''
     Display the room description text for the current room
     '''
     currentRoom = player["location"]
-    printNow("You are in the %s"%currentRoom)
+    messageString = ("You are in the %s"%currentRoom)
+    updateScreen(gameScreen, messageString)
     printNow("%s\n\n"%rooms[currentRoom]["room_description"])
     printMoveDirections()
 
@@ -653,11 +657,11 @@ def decodeValidMotionToStrings(index):
     adjacentRoomName = convert_room_number_to_rooom_name(adjacentRoomNumber)
 
     if roomBoarder == 'Y':
-        return adjacentRoomName
+    	return adjacentRoomName
     elif roomBoarder == 'O':
-        return ("An open door leading to %s"%adjacentRoomName)
+    	return ("An open door leading to %s"%adjacentRoomName)
     elif roomBoarder == 'C':    # C is a closed door
-        return ("An closed door leading to %s"%adjacentRoomName)
+    	return ("An closed door leading to %s"%adjacentRoomName)
 
 def printMoveDirections():
     '''
@@ -672,22 +676,22 @@ def printMoveDirections():
     printNow(southString)
 
 
-def office_handler(action, item, subject):
+def office_handler(action, item, subject, gameScreen):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     if item == 'key':
-        player["inventory"] = 'key'
-        printNow("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
+    	player["inventory"] = 'key'
+    	printNow("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
 
-def staircase_handler(action, item, subject):
+def staircase_handler(action, item, subject, gameScreen):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     printNow("Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n")
     describeRoom()
 
-def hidden_handler(action, item, subject):
+def hidden_handler(action, item, subject, gameScreen):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
@@ -696,10 +700,10 @@ def hidden_handler(action, item, subject):
       return
 
     if action == 'take' or action == 'get':
-        player["inventory"] = 'necklace'
-        printNow("Wasting no time you grab the necklace and conceal it in your jacket.\n")
+    	player["inventory"] = 'necklace'
+    	printNow("Wasting no time you grab the necklace and conceal it in your jacket.\n")
 
-def billiards_handler(action, item, subject):
+def billiards_handler(action, item, subject, gameScreen):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
@@ -711,7 +715,7 @@ def billiards_handler(action, item, subject):
       player["inventory"] = 'secret'
       printNow("Opening the vault to find the secret to the chest with the necklace.\n")
 
-def ballroom_handler(action, item, subject):
+def ballroom_handler(action, item, subject, gameScreen):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
@@ -721,32 +725,31 @@ def ballroom_handler(action, item, subject):
       printNow("You take a quick glance around the room and then use your key to unlock the library door.\n")
 
 
-def library_handler(action, item, subject):
+def library_handler(action, item, subject, gameScreen):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     if item == 'book':
-        library["passable_NESW"] = "YNNY"
-        printNow("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
+    	library["passable_NESW"] = "YNNY"
+    	printNow("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
 
-def park_handler(action, item, subject):
+def park_handler(action, item, subject, gameScreen):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    msgString = "You really should not be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n"
-    msgString = msgString + "While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n"
-    printNow(msgString)
+    printNow("You really should not be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n")
+    printNow("While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n")
     player["health"] = player["health"] - 50
     describeRoom()
 
-def start_handler(action, item, subject):
+def start_handler(action, item, subject, gameScreen):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    updateScreen("Game start")
+    updateScreen(gameScreen, "Game start")
     pass
 
-def getaway_vehicle_handler(action, item, subject):
+def getaway_vehicle_handler(action, item, subject, gameScreen):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
@@ -756,44 +759,47 @@ def getaway_vehicle_handler(action, item, subject):
     else:
       printNow("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
 
-def playerLoseScreen(playerName):
-    msgString = "\nSorry! %s You have lost too much health.  Please try again!\n\nGAME OVER!"%(playerName)
-    showInformation(msgString)
+def playerLoseScreen():
+    printNow("\nSorry!  You have lost too much health.  Please try again!\n\nGAME OVER!")
 
-def playerWinsScreen(playerName):
-    msgString = "\nYou won %s! \n\nGAME OVER!"%(playerName)
-    showInformation(msgString)
+def playerWinsScreen():
+    printNow("\nYou won! \n\nGAME OVER!")
 
 def setupGame():
+  gameScreen = makeEmptyPicture(GAME_OUTPUT_CANVAS_WIDTH,
+                                GAME_OUTPUT_CANVAS_HEIGTH,
+                                GAME_OUTPUT_CANVAS_COLOR)
 
   show(gameScreen)
-  return
+  return gameScreen
 
 
 def gameLoop():
     '''
     Main Game loop
     '''
-    setupGame()
+    gameScreen = setupGame()
     show(gameScreen)
     titleMessage()
     welcomeMessage()
     story()
-    playerName = requestString("Please enter your name")
+    debugLog("gameLoop", "start", "")
     gameOn = True
     gameCycles = 0
-    describeRoom() # Let the player know where they are starting from
+    describeRoom(gameScreen) # Let the player know where they are starting from
     while gameOn:
         #See if the player died
         if player["health"] < 0:
             gameOn = False
-            playerLoseScreen(playerName)
+            playerLoseScreen(gameScreen)
+            repaint(gameScreen)
             continue
 
         #See if player has won
         if player["inventory"] == 'complete':
             gameOn = False
-            playerWinsScreen(playerName)
+            playerWinsScreen(gameScreen)
+            repaint(gameScreen)
             continue
 
         gameCycles += 1
@@ -806,11 +812,11 @@ def gameLoop():
             continue
 
         #Are we moving
-        if isTravelCommand(action, item, subject):
+        if isTravelCommand(action, item, subject, gameScreen):
             continue
 
         # Administrative commands
-        if isAdministrative(action, item, subject):
+        if isAdministrative(action, item, subject, gameScreen):
             continue
 
         # each room gets its own function to deal with event in it
