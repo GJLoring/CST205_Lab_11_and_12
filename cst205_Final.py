@@ -319,7 +319,22 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   xpos = int(GAME_OUTPUT_CANVAS_WIDTH * (float(x)/100))
   style = makeStyle("Courier", Font.BOLD, TEXT_HEIGHT)
   
-  lines = textString.split("\n")
+  #Allow lines to wrap if they are too long
+  count = 0
+  tmp = ""
+  for char in textString:
+    if count == 0 and char.isalnum()==False:
+      continue
+    else:  
+      tmp = tmp + char
+      count = count + 1
+      
+    if count >= maxWidth:
+      count = 0
+      tmp = tmp + '\n'
+
+  lengthLimitedText = tmp   
+  lines = lengthLimitedText.split("\n")
   for line in lines:
     addTextWithStyle(gameScreen, xpos+1, ypos+1, line, style, shadow)
     addTextWithStyle(gameScreen, xpos, ypos, line, style, color)
