@@ -549,12 +549,12 @@ def try_to_move_player_to_new_room(DIRECTION_INDEX):
         player["location"] = movePlayer(DIRECTION_INDEX)
         describeRoom()
     elif passable == 'C':    # C is a closed door
-        printNow("You try but the door is closed")
+        showInformation("You try but the door is closed")
     elif passable == 'F':    # Fall hazard
         player["health"] = player["health"] - 50
-        printNow("You tumble down the stairs and lose health")
+        showInformation("You tumble down the stairs and lose health")
     else:
-        printNow("You can not move in that direction")
+        showInformation("You can not move in that direction")
 
 
 def convert_direction_to_index(item):
@@ -678,13 +678,13 @@ def office_handler(action, item, subject):
     '''
     if item == 'key':
         player["inventory"] = 'key'
-        printNow("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
+        showInformation("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
 
 def staircase_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    printNow("Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n")
+    showInformation("Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n")
     describeRoom()
 
 def hidden_handler(action, item, subject):
@@ -692,12 +692,12 @@ def hidden_handler(action, item, subject):
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     if player["inventory"] != 'secret':
-      printNow('You must first have the secret to the chest')
+      showInformation('You must first have the secret to the chest')
       return
 
     if action == 'take' or action == 'get':
         player["inventory"] = 'necklace'
-        printNow("Wasting no time you grab the necklace and conceal it in your jacket.\n")
+        showInformation("Wasting no time you grab the necklace and conceal it in your jacket.\n")
 
 def billiards_handler(action, item, subject):
     '''
@@ -705,11 +705,11 @@ def billiards_handler(action, item, subject):
     '''
     if action == 'open':
       if player["inventory"] == 'key':
-        printNow("You can only hold one hidden item at a time, use the key you have to open the library then come back here")
+        showInformation("You can only hold one hidden item at a time, use the key you have to open the library then come back here")
         return
 
       player["inventory"] = 'secret'
-      printNow("Opening the vault to find the secret to the chest with the necklace.\n")
+      showInformation("Opening the vault to find the secret to the chest with the necklace.\n")
 
 def ballroom_handler(action, item, subject):
     '''
@@ -718,7 +718,7 @@ def ballroom_handler(action, item, subject):
     if player["inventory"] == 'key' and action == 'open':
       ballroom["passable_NESW"] = "YOYY"
       player["inventory"] = ''
-      printNow("You take a quick glance around the room and then use your key to unlock the library door.\n")
+      showInformation("You take a quick glance around the room and then use your key to unlock the library door.\n")
 
 
 def library_handler(action, item, subject):
@@ -727,7 +727,7 @@ def library_handler(action, item, subject):
     '''
     if item == 'book':
         library["passable_NESW"] = "YNNY"
-        printNow("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
+        showInformation("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
 
 def park_handler(action, item, subject):
     '''
@@ -735,7 +735,7 @@ def park_handler(action, item, subject):
     '''
     msgString = "You really should not be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n"
     msgString = msgString + "While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n"
-    printNow(msgString)
+    showInformation(msgString)
     player["health"] = player["health"] - 50
     describeRoom()
 
@@ -752,9 +752,9 @@ def getaway_vehicle_handler(action, item, subject):
     '''
     if player["inventory"] == 'necklace':
       player["inventory"] = 'complete'
-      printNow("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
+      showInformation("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
     else:
-      printNow("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
+      showInformation("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
 
 def playerLoseScreen(playerName):
     msgString = "\nSorry! %s You have lost too much health.  Please try again!\n\nGAME OVER!"%(playerName)
@@ -764,18 +764,13 @@ def playerWinsScreen(playerName):
     msgString = "\nYou won %s! \n\nGAME OVER!"%(playerName)
     showInformation(msgString)
 
-def setupGame():
-
-  show(gameScreen)
-  return
-
 
 def gameLoop():
     '''
     Main Game loop
     '''
-    setupGame()
     show(gameScreen)
+    repaint(gameScreen)
     titleMessage()
     welcomeMessage()
     story()
@@ -784,6 +779,8 @@ def gameLoop():
     gameCycles = 0
     describeRoom() # Let the player know where they are starting from
     while gameOn:
+        loadRoomImage()
+        repaint(gameScreen)
         #See if the player died
         if player["health"] < 0:
             gameOn = False
