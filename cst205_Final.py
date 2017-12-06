@@ -115,6 +115,7 @@ TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 5
 TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 80
 
 MAX_TEXT_WIDTH_IN_CHARS = 50
+TEXT_HEIGHT = 24
 
 TEXT_COLOR = makeColor(255, 255, 0)
 TEXT_SHADOW = makeColor(128, 128, 128)
@@ -315,17 +316,14 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   '''
   import java.awt.Font as Font
   ypos = int(GAME_OUTPUT_CANVAS_HEIGTH * (float(y)/100))
-  print ypos
   xpos = int(GAME_OUTPUT_CANVAS_WIDTH * (float(x)/100))
-  print xpos
-  Text_Height = 24
-  style = makeStyle("Courier", Font.BOLD, Text_Height)
+  style = makeStyle("Courier", Font.BOLD, TEXT_HEIGHT)
   
   lines = textString.split("\n")
   for line in lines:
     addTextWithStyle(gameScreen, xpos+1, ypos+1, line, style, shadow)
     addTextWithStyle(gameScreen, xpos, ypos, line, style, color)
-    ypos = ypos + Text_Height
+    ypos = ypos + TEXT_HEIGHT
   repaint(gameScreen)
   return
 
@@ -521,7 +519,7 @@ def drawMap():
         canvas = canvas + "\n|\t\t|\t\t|\t\t|\n"
         canvas = canvas + "+---------------+---------------+---------------+\n"
 
-    printNow(canvas)
+    outputStringToGraphic(canvas)
 
 
 def isTravelCommand(action, item, subject):
@@ -740,7 +738,7 @@ def start_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    updateScreen("Game start")
+    #updateScreen("Game start")
     pass
 
 def getaway_vehicle_handler(action, item, subject):
@@ -775,7 +773,6 @@ def gameLoop():
     '''
     show(gameScreen)
     loadRoomImage(imageFileName=gameScreenImages["title"])
-    
 
     titleMessage()
     welcomeMessage()
