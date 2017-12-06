@@ -111,8 +111,8 @@ HEALTH_BAR_SIZE_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 5
 MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
 MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
 
-TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
-TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
+TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 5
+TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 80
 
 MAX_TEXT_WIDTH_IN_CHARS = 50
 
@@ -281,18 +281,21 @@ def drawMap(x,y,color):
   '''
   Draw on screen map to help the player navigate the game
   '''
+  repaint(gameScreen)
   pass
 
 def drawHealthBar(x1,y1,x2,y2,value):
   '''
   Draw on screen health indicator
   '''
+  repaint(gameScreen)
   pass
 
 def drawInventory(x,y):
   '''
   Draw on screen player inventory
   '''
+  repaint(gameScreen)
   pass
 
 
@@ -302,6 +305,7 @@ def loadRoomImage(imageFileName):
   '''
   room = openImage(imageFileName=imageFileName)
   copyInto(room, gameScreen, 0, 0)
+  repaint(gameScreen)
   return
 
 def drawText(x,y,maxWidth,color,shadow,textString):
@@ -310,10 +314,19 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   once in shadow color and then -1,-1 pixel offest in normal color
   '''
   import java.awt.Font as Font
-  ypos = int(GAME_OUTPUT_CANVAS_WIDTH *  (float(x) / 100))
-  xpos = int(GAME_OUTPUT_CANVAS_HEIGTH * (float(x) / 100))
-  style = makeStyle("Comic Sans", Font.BOLD, 24)
-  addTextWithStyle(gameScreen, xpos, ypos, textString, style, color)
+  ypos = int(GAME_OUTPUT_CANVAS_HEIGTH * (float(y)/100))
+  print ypos
+  xpos = int(GAME_OUTPUT_CANVAS_WIDTH * (float(x)/100))
+  print xpos
+  Text_Height = 24
+  style = makeStyle("Courier", Font.BOLD, Text_Height)
+  
+  lines = textString.split("\n")
+  for line in lines:
+    addTextWithStyle(gameScreen, xpos+1, ypos+1, line, style, shadow)
+    addTextWithStyle(gameScreen, xpos, ypos, line, style, color)
+    ypos = ypos + Text_Height
+  repaint(gameScreen)
   return
 
 def playRoomSound():
@@ -367,7 +380,7 @@ def welcomeMessage():
     welcomString = welcomString + "Type help to learn how to play\n"
     welcomString = welcomString + "Type exit to leave the game\n"
     welcomString = welcomString + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-    showInformation(welcomString)
+    outputStringToGraphic(welcomString)
     return
 
 def story():
@@ -702,7 +715,7 @@ def ballroom_handler(action, item, subject):
     if player["inventory"] == 'key' and action == 'open':
       ballroom["passable_NESW"] = "YOYY"
       player["inventory"] = ''
-      showInformation("You take a quick glance around the room and then use your key to unlock the library door.\n")
+      outputStringToGraphic("You take a quick glance around the room and then use your key to unlock the library door.\n")
 
 
 def library_handler(action, item, subject):
@@ -711,7 +724,7 @@ def library_handler(action, item, subject):
     '''
     if item == 'book':
         library["passable_NESW"] = "YNNY"
-        showInformation("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
+        outputStringToGraphic("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
 
 def park_handler(action, item, subject):
     '''
@@ -719,7 +732,7 @@ def park_handler(action, item, subject):
     '''
     msgString = "You really should not be wasting time in the park. Steal the necklace and you can spend the rest of your life in a park!\n"
     msgString = msgString + "While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n"
-    showInformation(msgString)
+    outputStringToGraphic(msgString)
     player["health"] = player["health"] - 50
     describeRoom()
 
@@ -748,6 +761,13 @@ def playerWinsScreen(playerName):
     msgString = "\nYou won %s! \n\nGAME OVER!"%(playerName)
     showInformation(msgString)
 
+def outputStringToGraphic(stringMsg):
+    drawText(     TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
+                  TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
+                  MAX_TEXT_WIDTH_IN_CHARS,
+                  TEXT_COLOR,
+                  TEXT_SHADOW,
+                  stringMsg)
 
 def gameLoop():
     '''
@@ -755,7 +775,8 @@ def gameLoop():
     '''
     show(gameScreen)
     loadRoomImage(imageFileName=gameScreenImages["title"])
-    repaint(gameScreen)
+    
+
     titleMessage()
     welcomeMessage()
     story()
@@ -765,7 +786,7 @@ def gameLoop():
     describeRoom() # Let the player know where they are starting from
     while gameOn:
         loadRoomImage(imageFileName=gameScreenImages[player["location"]])
-        repaint(gameScreen)
+
         #See if the player died
         if player["health"] < 0:
             gameOn = False
