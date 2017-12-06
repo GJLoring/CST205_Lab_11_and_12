@@ -335,7 +335,8 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   return
 
 def playRoomSound():
-  room = openSound(soundFileName = gameSounds[player["location"]])
+  file = openSound(gameSounds[player["location"]])
+  play(file)
 
 def refreshScreen():
   show(gameScreen)
@@ -547,6 +548,7 @@ def try_to_move_player_to_new_room(DIRECTION_INDEX):
     passable = rooms[currentRoom]["passable_NESW"][DIRECTION_INDEX]
     if passable == 'Y' or passable == 'O':    # Yes passable or O for open door
         player["location"] = movePlayer(DIRECTION_INDEX)
+        playRoomSound()
         describeRoom()
     elif passable == 'C':    # C is a closed door
         showInformation("You try but the door is closed")
