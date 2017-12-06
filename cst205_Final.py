@@ -20,13 +20,13 @@
 import os
 
 gameScreenImages = {
-    "title" : "placeholder.jpg",
+    "title" : "HomeScreen.jpg",
     "office" : "placeholder.jpg",
-    "staircase" : "placeholder.jpg",
+    "staircase" : "Staircase.jpg",
     "hidden" : "placeholder.jpg",
-    "billiards" : "placeholder.jpg",
-    "ballroom" : "placeholder.jpg",
-    "library" : "placeholder.jpg",
+    "billiards" : "BilliardsRoom.jpg",
+    "ballroom" : "Ballroom.jpg",
+    "library" : "Library.jpg",
     "park" : "placeholder.jpg",
     "start" : "placeholder.jpg",
     "getaway_vehicle" : "placeholder.jpg",
@@ -296,11 +296,11 @@ def drawInventory(x,y):
   pass
 
 
-def loadRoomImage():
+def loadRoomImage(imageFileName):
   '''
   Draw on screen image into game canvas, center left to right, and align to top
   '''
-  room = openImage(imageFileName=gameScreenImages[player["location"]])
+  room = openImage(imageFileName=imageFileName)
   copyInto(room, gameScreen, 0, 0)
   return
 
@@ -754,6 +754,7 @@ def gameLoop():
     Main Game loop
     '''
     show(gameScreen)
+    loadRoomImage(imageFileName=gameScreenImages["title"])
     repaint(gameScreen)
     titleMessage()
     welcomeMessage()
@@ -763,7 +764,7 @@ def gameLoop():
     gameCycles = 0
     describeRoom() # Let the player know where they are starting from
     while gameOn:
-        loadRoomImage()
+        loadRoomImage(imageFileName=gameScreenImages[player["location"]])
         repaint(gameScreen)
         #See if the player died
         if player["health"] < 0:
