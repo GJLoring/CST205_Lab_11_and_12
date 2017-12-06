@@ -296,30 +296,12 @@ def drawInventory(x,y):
   pass
 
 
-def pyCopy(source, target, targetX, targetY):
-  #Make sure our destination is large enough
-  if source.getWidth() > target.getWidth() or source.getHeight() >target.getHeight():
-    raise #Image is to large to insert
-
-  #Shift the image to fit inside destination if necessary
-  if source.getWidth()+ targetX > target.getWidth():
-    targetX = target.getWidth()-source.getWidth()
-  if source.getHeight()+ targetY > target.getHeight():
-    targetY = target.getHeight()-source.getHeight()
-
-  #Actual insert
-  for x in range (0, getWidth(source)):
-    for y in range (0, getHeight(source)):
-      setColor( getPixel(target, x+targetX, y+targetY), getColor(getPixel(source, x, y)))
-
-  return target
-
 def loadRoomImage():
   '''
   Draw on screen image into game canvas, center left to right, and align to top
   '''
   room = openImage(imageFileName=gameScreenImages[player["location"]])
-  pyCopy(room, gameScreen, targetX=0, targetY=0)
+  copyInto(room, gameScreen, 0, 0)
   return
 
 def drawText(x,y,maxWidth,color,shadow,textString):
