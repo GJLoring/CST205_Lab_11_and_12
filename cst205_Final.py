@@ -640,8 +640,9 @@ def describeRoom():
     Display the room description text for the current room
     '''
     currentRoom = player["location"]
-    printNow("You are in the %s"%currentRoom)
-    printNow("%s\n\n"%rooms[currentRoom]["room_description"])
+    msgString = ("You are in the %s"%currentRoom)
+    msgString = ("\n%s"%rooms[currentRoom]["room_description"])
+    outputStringToGraphic(msgString)
     printMoveDirections()
 
 def decodeValidMotionToStrings(index):
@@ -688,13 +689,13 @@ def office_handler(action, item, subject):
     '''
     if item == 'key':
         player["inventory"] = 'key'
-        showInformation("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
+        msgString("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
 
 def staircase_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    showInformation("Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n")
+    msgString("Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n")
     describeRoom()
 
 def hidden_handler(action, item, subject):
@@ -702,12 +703,12 @@ def hidden_handler(action, item, subject):
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     if player["inventory"] != 'secret':
-      showInformation('You must first have the secret to the chest')
+      msgString('You must first have the secret to the chest')
       return
 
     if action == 'take' or action == 'get':
         player["inventory"] = 'necklace'
-        showInformation("Wasting no time you grab the necklace and conceal it in your jacket.\n")
+        msgString("Wasting no time you grab the necklace and conceal it in your jacket.\n")
 
 def billiards_handler(action, item, subject):
     '''
@@ -715,11 +716,11 @@ def billiards_handler(action, item, subject):
     '''
     if action == 'open':
       if player["inventory"] == 'key':
-        showInformation("You can only hold one hidden item at a time, use the key you have to open the library then come back here")
+        outputStringToGraphic("You can only hold one hidden item at a time, use the key you have to open the library then come back here")
         return
 
       player["inventory"] = 'secret'
-      showInformation("Opening the vault to find the secret to the chest with the necklace.\n")
+      outputStringToGraphic("Opening the vault to find the secret to the chest with the necklace.\n")
 
 def ballroom_handler(action, item, subject):
     '''
@@ -762,17 +763,17 @@ def getaway_vehicle_handler(action, item, subject):
     '''
     if player["inventory"] == 'necklace':
       player["inventory"] = 'complete'
-      showInformation("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
+      outputStringToGraphic("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
     else:
-      showInformation("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
+      outputStringToGraphic("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
 
 def playerLoseScreen(playerName):
     msgString = "\nSorry! %s You have lost too much health.  Please try again!\n\nGAME OVER!"%(playerName)
-    showInformation(msgString)
+    outputStringToGraphic(msgString)
 
 def playerWinsScreen(playerName):
     msgString = "\nYou won %s! \n\nGAME OVER!"%(playerName)
-    showInformation(msgString)
+    outputStringToGraphic(msgString)
 
 def outputStringToGraphic(stringMsg):
     drawText(     TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
@@ -798,7 +799,7 @@ def gameLoop():
     describeRoom() # Let the player know where they are starting from
     while gameOn:
         loadRoomImage(imageFileName=gameScreenImages[player["location"]])
-
+        describeRoom()
         #See if the player died
         if player["health"] < 0:
             gameOn = False
