@@ -18,6 +18,7 @@
 # Just update the file names as you go. See note about optionals half way down.
 
 import os
+import java.awt.Font as Font
 
 gameScreenImages = {
     "title" : "HomeScreen.jpg",
@@ -117,10 +118,19 @@ TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 80
 MAX_TEXT_WIDTH_IN_CHARS = 60
 TEXT_HEIGHT = 24
 
+HEALTHBAR_INSET_OFF_SIDES = 100
+HEALTH_FONT_HEIGHT = 20
+HEALTH_BAR_Y = 550
+HEALTH_BAR_HEIGHT = HEALTH_FONT_HEIGHT + 4
+
+
 TEXT_COLOR = makeColor(255, 255, 0)
 TEXT_SHADOW = makeColor(128, 128, 128)
 MAP_COLOR = makeColor(0, 255, 255)
+COLOR_WHITE = makeColor(255, 255, 255)
 COLOR_BLACK = makeColor(0, 0, 0)
+COLOR_RED = makeColor(255, 0, 0)
+COLOR_PURPLE = makeColor(128, 32, 192)
 
 # A global dictionary to hold player attributes
 player = {
@@ -286,12 +296,34 @@ def drawMap(x,y,color):
   repaint(gameScreen)
   pass
 
-def drawHealthBar(x1,y1,x2,y2,value):
+def drawHealthBar():
   '''
   Draw on screen health indicator
   '''
-  repaint(gameScreen)
-  pass
+
+  Health_POS = int((GAME_OUTPUT_CANVAS_WIDTH - (HEALTHBAR_INSET_OFF_SIDES*2) )* (float(player["health"])/100))
+  addRectFilled(gameScreen, 
+                HEALTHBAR_INSET_OFF_SIDES, 
+                HEALTH_BAR_Y, 
+                Health_POS, 
+                HEALTH_BAR_HEIGHT, 
+                COLOR_PURPLE)
+  addRectFilled(gameScreen, 
+                Health_POS, 
+                HEALTH_BAR_Y, 
+                GAME_OUTPUT_CANVAS_WIDTH-HEALTHBAR_INSET_OFF_SIDES, 
+                HEALTH_BAR_HEIGHT, 
+                COLOR_BLACK)
+  addRect(gameScreen, 
+          HEALTHBAR_INSET_OFF_SIDES, 
+          HEALTH_BAR_Y, 
+          GAME_OUTPUT_CANVAS_WIDTH-HEALTHBAR_INSET_OFF_SIDES, 
+          HEALTH_BAR_HEIGHT, 
+          COLOR_RED)   
+  
+  xpos = int(GAME_OUTPUT_CANVAS_WIDTH * (float(50)/100))
+  style = makeStyle("Courier", Font.BOLD, HEALTH_FONT_HEIGHT)                   
+  addTextWithStyle(gameScreen, xpos, HEALTH_BAR_Y+HEALTH_FONT_HEIGHT, "Health", style, COLOR_WHITE)
 
 def drawInventory(x,y):
   '''
@@ -315,7 +347,6 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   Draw text on the screen to communicate with the user.  Draw text twice
   once in shadow color and then -1,-1 pixel offest in normal color
   '''
-  import java.awt.Font as Font
   ypos = int(GAME_OUTPUT_CANVAS_HEIGTH * (float(y)/100))
   xpos = int(GAME_OUTPUT_CANVAS_WIDTH * (float(x)/100))
   style = makeStyle("Courier", Font.BOLD, TEXT_HEIGHT)
@@ -816,6 +847,7 @@ def gameLoop():
     describeRoom() # Let the player know where they are starting from
     while gameOn:
         loadRoomImage(imageFileName=gameScreenImages[player["location"]])
+        drawHealthBar()
         describeRoom()
         #See if the player died
         if player["health"] < 0:
