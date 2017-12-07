@@ -111,15 +111,16 @@ HEALTH_BAR_SIZE_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 5
 MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 10
 MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
 
-TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 5
+TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 2
 TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 80
 
-MAX_TEXT_WIDTH_IN_CHARS = 50
+MAX_TEXT_WIDTH_IN_CHARS = 60
 TEXT_HEIGHT = 24
 
 TEXT_COLOR = makeColor(255, 255, 0)
 TEXT_SHADOW = makeColor(128, 128, 128)
 MAP_COLOR = makeColor(0, 255, 255)
+COLOR_BLACK = makeColor(0, 0, 0)
 
 # A global dictionary to hold player attributes
 player = {
@@ -319,6 +320,14 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   xpos = int(GAME_OUTPUT_CANVAS_WIDTH * (float(x)/100))
   style = makeStyle("Courier", Font.BOLD, TEXT_HEIGHT)
   
+  #Clear the area where we are going to draw our text
+  addRectFilled(gameScreen, 
+                0, 
+                ypos-TEXT_HEIGHT, 
+                GAME_OUTPUT_CANVAS_WIDTH, 
+                GAME_OUTPUT_CANVAS_HEIGTH-ypos, 
+                COLOR_BLACK)
+                
   #Allow lines to wrap if they are too long
   count = 0
   tmp = ""
@@ -328,7 +337,15 @@ def drawText(x,y,maxWidth,color,shadow,textString):
     else:  
       tmp = tmp + char
       count = count + 1
-      
+    
+    #If we are getting close to the end of the line and see a
+    # space it is probally a good idea to just go ahead and wrap
+    # to a new line
+    if count >= (maxWidth - 6) and char == ' ': 
+      count = 0
+      tmp = tmp + '\n' 
+    
+    # We are out of space and now must wrap even if it means splitting a word          
     if count >= maxWidth:
       count = 0
       tmp = tmp + '\n'
@@ -689,13 +706,13 @@ def office_handler(action, item, subject):
     '''
     if item == 'key':
         player["inventory"] = 'key'
-        msgString("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
+        outputStringToGraphic("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
 
 def staircase_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
-    msgString("Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n")
+    outputStringToGraphic("Stairs are a good way to get where you are going, but trying anything else on them could get you hurt.\n")
     describeRoom()
 
 def hidden_handler(action, item, subject):
@@ -703,12 +720,12 @@ def hidden_handler(action, item, subject):
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
     '''
     if player["inventory"] != 'secret':
-      msgString('You must first have the secret to the chest')
+      outputStringToGraphic('You must first have the secret to the chest')
       return
 
     if action == 'take' or action == 'get':
         player["inventory"] = 'necklace'
-        msgString("Wasting no time you grab the necklace and conceal it in your jacket.\n")
+        outputStringToGraphic("Wasting no time you grab the necklace and conceal it in your jacket.\n")
 
 def billiards_handler(action, item, subject):
     '''
