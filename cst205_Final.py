@@ -21,9 +21,9 @@ import os
 
 gameScreenImages = {
     "title" : "HomeScreen.jpg",
-    "office" : "placeholder.jpg",
+    "office" : "OfficeRoom.jpg",
     "staircase" : "Staircase.jpg",
-    "hidden" : "placeholder.jpg",
+    "hidden" : "HiddenRoom.jpg",
     "billiards" : "BilliardsRoom.jpg",
     "ballroom" : "Ballroom.jpg",
     "library" : "Library.jpg",
