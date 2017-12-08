@@ -135,7 +135,7 @@ MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 90
 TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH = 2
 TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT = 80
 
-MAX_TEXT_WIDTH_IN_CHARS = 60
+MAX_TEXT_WIDTH_IN_CHARS = 50
 TEXT_HEIGHT = 24
 
 HEALTHBAR_INSET_OFF_SIDES = 100
@@ -327,10 +327,9 @@ def pyCopy(source, targetX, targetY):
   #Actual insert
   for x in range (0, getWidth(source)):
     for y in range (0, getHeight(source)):
-      pass
-      #TODO add a skip this pixel if pixel is green
-      #if pixelColor == COLOR_GREEN:
-      #setColor( getPixel(gameScreen, x+targetX, y+targetY),getColor(getPixel(source, x, y)))
+      pixelColor = getPixel(source, x, y)
+      if getRed(pixelColor) > 20 or getBlue(pixelColor) > 20 or getGreen(pixelColor) < 225:
+        setColor( getPixel(gameScreen, x+targetX, y+targetY),getColor(pixelColor))
 
 def drawInventory():
   '''
@@ -348,7 +347,7 @@ def drawMap():
   '''
   imageFileName=gameMapImages[player["location"]]
   item = openImage(imageFileName=imageFileName)
-  pyCopy(item, 700, 700)
+  pyCopy(item, 700, 625)
 
 
 def drawHealthBar():
@@ -407,7 +406,7 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   addRectFilled(gameScreen, 
                 0, 
                 ypos-TEXT_HEIGHT, 
-                GAME_OUTPUT_CANVAS_WIDTH, 
+                GAME_OUTPUT_CANVAS_WIDTH - 350 , 
                 GAME_OUTPUT_CANVAS_HEIGTH-ypos, 
                 COLOR_BLACK)
                 
