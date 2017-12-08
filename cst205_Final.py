@@ -43,27 +43,47 @@ gameScreenImages = {
     "get_mugged" : "placeholder.jpg"
 }
 
+gameMapImages = {
+    "title" : "placeholder.jpg",
+    "office" : "placeholder.jpg",
+    "staircase" : "placeholder.jpg",
+    "hidden" : "placeholder.jpg",
+    "billiards" : "placeholder.jpg",
+    "ballroom" : "placeholder.jpg",
+    "library" : "placeholder.jpg",
+    "park" : "placeholder.jpg",
+    "start" : "placeholder.jpg",
+    "getaway_vehicle" : "placeholder.jpg"
+}
+
+gameInventoryImages = {
+    "nothing" : "placeholder.jpg",
+    "key" : "placeholder.jpg",
+    "secret" : "placeholder.jpg",
+    "necklace" : "placeholder.jpg",
+}
+
 gameSounds = {
-    "title" : "placeholder.wav",
-    "office" : "placeholder.wav",
-    "staircase" : "placeholder.wav",
+    "title" : "intro.wav",
+    "office" : "office.wav",
+    "staircase" : "stairs.wav",
     "hidden" : "placeholder.wav",
-    "billiards" : "placeholder.wav",
-    "ballroom" : "placeholder.wav",
-    "library" : "placeholder.wav",
-    "park" : "placeholder.wav",
+    "billiards" : "billiards.wav",
+    "ballroom" : "ballroom.wav",
+    "library" : "library.wav",
+    "park" : "park.wav",
     "start" : "placeholder.wav",
     "getaway_vehicle" : "placeholder.wav",
     "introduction" : "placeholder.wav",  # If we want or have time for events we can do some, all or none from here down
-    "win" : "placeholder.wav",
-    "loose" : "placeholder.wav",
-    "get_key" : "placeholder.wav",
-    "get_secret" : "placeholder.wav",
-    "get_necklace" : "placeholder.wav",
-    "open_book_case" : "placeholder.wav",
-    "open_door" : "placeholder.wav",
-    "fall_from_stairs" : "placeholder.wav",
-    "get_mugged" : "placeholder.wav"
+    "win" : "win.wav",
+    "loose" : "lose.wav",
+    "get_key" : "get_key.wav",
+    "get_secret" : "get_secret.wav",
+    "get_necklace" : "get_necklace.wav",
+    "open_book_case" : "open_book_case.wav",
+    "open_door" : "open_door.wav",
+    "fall_from_stairs" : "fall_from_stairs.wav",
+    "get_mugged" : "get_mugged.wav"
 }
 
 # Test for Lab 11 bullet 1, Title Screen
@@ -289,48 +309,77 @@ def openSound(soundFileName="placeholder.wav"):
   soundObject = makeSound(soundFileName)
   return soundObject
 
-def drawMap(x,y,color):
+def pyCopy(source, targetX, targetY):
+  '''
+  Insert an alpha masked "Green Screen" image into the game
+  '''
+  #Make sure our destination is large enough
+  if source.getWidth() > gameScreen.getWidth() or source.getHeight() >gameScreen.getHeight():
+    raise #Image is to large to insert
+
+  #Shift the image to fit inside destination if necessary
+  if source.getWidth()+ targetX > gameScreen.getWidth():
+    targetX = gameScreen.getWidth()-source.getWidth()
+  if source.getHeight()+ targetY > gameScreen.getHeight():
+    targetY = gameScreen.getHeight()-source.getHeight()
+
+  #Actual insert
+  for x in range (0, getWidth(source)):
+    for y in range (0, getHeight(source)):
+      #TODO add a skip this pixel if pixel is green
+      setColor( getPixel(gameScreen, x+targetX, y+targetY), getColor(getPixel(source, x, y)))
+
+def drawInventory():
+  '''
+  Draw on screen player inventory
+  '''
+  imageFileName=gameInventoryImages[player["inventory"]]
+  item = openImage(imageFileName=imageFileName)
+  pyCopy(item, INVENTORY_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH, INVENTORY_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT)
+
+  
+  
+def drawMap():
   '''
   Draw on screen map to help the player navigate the game
   '''
-  repaint(gameScreen)
-  pass
+  imageFileName=gameMapImages[player["location"]]
+  item = openImage(imageFileName=imageFileName)
+  pyCopy(item, MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH, MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_WIDTH)
+
 
 def drawHealthBar():
   '''
-  Draw on screen health indicator
+  Draw and label on screen health indicator
   '''
-
   Health_POS = int((GAME_OUTPUT_CANVAS_WIDTH - (HEALTHBAR_INSET_OFF_SIDES*2) )* (float(player["health"])/100))
+  #Draw Full health portion of the bar
   addRectFilled(gameScreen, 
                 HEALTHBAR_INSET_OFF_SIDES, 
                 HEALTH_BAR_Y, 
                 Health_POS, 
                 HEALTH_BAR_HEIGHT, 
                 COLOR_PURPLE)
+  #Draw empty health portion of the bar
   addRectFilled(gameScreen, 
                 Health_POS, 
                 HEALTH_BAR_Y, 
-                GAME_OUTPUT_CANVAS_WIDTH-HEALTHBAR_INSET_OFF_SIDES, 
+                GAME_OUTPUT_CANVAS_WIDTH-(2*HEALTHBAR_INSET_OFF_SIDES), 
                 HEALTH_BAR_HEIGHT, 
                 COLOR_BLACK)
+  #Draw Boarder around health bar             
   addRect(gameScreen, 
           HEALTHBAR_INSET_OFF_SIDES, 
           HEALTH_BAR_Y, 
-          GAME_OUTPUT_CANVAS_WIDTH-HEALTHBAR_INSET_OFF_SIDES, 
+          GAME_OUTPUT_CANVAS_WIDTH-(2*HEALTHBAR_INSET_OFF_SIDES), 
           HEALTH_BAR_HEIGHT, 
           COLOR_RED)   
   
+  # Put the word Health on the bar with the health value
+  msgString = ("Health: %i"%player["health"])
   xpos = int(GAME_OUTPUT_CANVAS_WIDTH * (float(50)/100))
   style = makeStyle("Courier", Font.BOLD, HEALTH_FONT_HEIGHT)                   
-  addTextWithStyle(gameScreen, xpos, HEALTH_BAR_Y+HEALTH_FONT_HEIGHT, "Health", style, COLOR_WHITE)
-
-def drawInventory(x,y):
-  '''
-  Draw on screen player inventory
-  '''
-  repaint(gameScreen)
-  pass
+  addTextWithStyle(gameScreen, xpos, HEALTH_BAR_Y+HEALTH_FONT_HEIGHT, msgString, style, COLOR_WHITE)
 
 
 def loadRoomImage(imageFileName):
@@ -391,6 +440,9 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   return
 
 def playRoomSound():
+  '''
+  Play the ambient sound for the room when a room is entered
+  '''
   file = openSound(gameSounds[player["location"]])
   play(file)
 
@@ -573,7 +625,7 @@ def tutorial():
     printNow(administrative)
 
 
-def drawMap():
+def drawMap_depricated():
     canvas = "+---------------+---------------+---------------+\n"
     for row in map:
         canvas = canvas + "|"
@@ -824,12 +876,15 @@ def playerWinsScreen(playerName):
     outputStringToGraphic(msgString)
 
 def outputStringToGraphic(stringMsg):
-    drawText(     TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  MAX_TEXT_WIDTH_IN_CHARS,
-                  TEXT_COLOR,
-                  TEXT_SHADOW,
-                  stringMsg)
+  '''
+  Wrapper function for the majority of user update and status text
+  '''
+  drawText(  TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
+             TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
+             MAX_TEXT_WIDTH_IN_CHARS,
+             TEXT_COLOR,
+             TEXT_SHADOW,
+             stringMsg)
 
 def gameLoop():
     '''
@@ -848,6 +903,8 @@ def gameLoop():
     while gameOn:
         loadRoomImage(imageFileName=gameScreenImages[player["location"]])
         drawHealthBar()
+        #drawInventory()
+        #drawMap()
         describeRoom()
         #See if the player died
         if player["health"] < 0:
@@ -899,8 +956,6 @@ def gameLoop():
             getaway_vehicle_handler(action, item, subject)
         else:
             raise "Error no room to handle events"
-
-
 
 
 # Automatically Start the game for the player
