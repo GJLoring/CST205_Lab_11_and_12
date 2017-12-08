@@ -327,6 +327,7 @@ def pyCopy(source, targetX, targetY):
   #Actual insert
   for x in range (0, getWidth(source)):
     for y in range (0, getHeight(source)):
+      pass
       #TODO add a skip this pixel if pixel is green
       #if pixelColor == COLOR_GREEN:
       #setColor( getPixel(gameScreen, x+targetX, y+targetY),getColor(getPixel(source, x, y)))
