@@ -45,15 +45,15 @@ gameScreenImages = {
 
 gameMapImages = {
     "title" : "placeholder.jpg",
-    "office" : "placeholder.jpg",
-    "staircase" : "placeholder.jpg",
-    "hidden" : "placeholder.jpg",
-    "billiards" : "placeholder.jpg",
-    "ballroom" : "placeholder.jpg",
-    "library" : "placeholder.jpg",
-    "park" : "placeholder.jpg",
-    "start" : "placeholder.jpg",
-    "getaway_vehicle" : "placeholder.jpg"
+    "office" : "map_office.jpg",
+    "staircase" : "map_Staircase.jpg",
+    "hidden" : "map_secret.jpg",
+    "billiards" : "map_billiards.jpg",
+    "ballroom" : "map_ballroom.jpg",
+    "library" : "map_Library.jpg",
+    "park" : "map_park.jpg",
+    "start" : "map_start.jpg",
+    "getaway_vehicle" : "map_getaway.jpg"
 }
 
 gameInventoryImages = {
@@ -151,6 +151,7 @@ COLOR_WHITE = makeColor(255, 255, 255)
 COLOR_BLACK = makeColor(0, 0, 0)
 COLOR_RED = makeColor(255, 0, 0)
 COLOR_PURPLE = makeColor(128, 32, 192)
+COLOR_GREEN = makeColor(0, 255, 0)
 
 # A global dictionary to hold player attributes
 player = {
@@ -327,7 +328,8 @@ def pyCopy(source, targetX, targetY):
   for x in range (0, getWidth(source)):
     for y in range (0, getHeight(source)):
       #TODO add a skip this pixel if pixel is green
-      setColor( getPixel(gameScreen, x+targetX, y+targetY), getColor(getPixel(source, x, y)))
+      #if pixelColor == COLOR_GREEN:
+      #setColor( getPixel(gameScreen, x+targetX, y+targetY),getColor(getPixel(source, x, y)))
 
 def drawInventory():
   '''
@@ -345,7 +347,7 @@ def drawMap():
   '''
   imageFileName=gameMapImages[player["location"]]
   item = openImage(imageFileName=imageFileName)
-  pyCopy(item, MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH, MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_WIDTH)
+  pyCopy(item, 700, 700)
 
 
 def drawHealthBar():
@@ -904,7 +906,7 @@ def gameLoop():
         loadRoomImage(imageFileName=gameScreenImages[player["location"]])
         drawHealthBar()
         #drawInventory()
-        #drawMap()
+        drawMap()
         describeRoom()
         #See if the player died
         if player["health"] < 0:
