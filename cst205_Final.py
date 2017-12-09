@@ -28,7 +28,7 @@ gameScreenImages = {
     "loose" : "placeholder.jpg",
     "get_key" : "OfficeRoomkey.jpg",
     "get_secret" : "BilliardsRoomgetkey.jpg",
-    "get_necklace" : "placeholder.jpg",
+    "get_necklace" : "HiddenRoomNecklace.jpg",
     "open_book_case" : "Libraryopen.jpg",
     "open_door" : "placeholder.jpg",
     "fall_from_stairs" : "Staircasefall.jpg",
