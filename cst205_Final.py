@@ -20,9 +20,9 @@ gameScreenImages = {
     "billiards" : "BilliardsRoom.jpg",
     "ballroom" : "Ballroom.jpg",
     "library" : "Library.jpg",
-    "park" : "placeholder.jpg",
-    "start" : "placeholder.jpg",
-    "getaway_vehicle" : "placeholder.jpg",
+    "park" : "park.jpg",
+    "start" : "start.jpg",
+    "getaway_vehicle" : "getaway.jpg",
     "introduction" : "placeholder.jpg",  # If we want or have time for events we can do some, all or none from here down
     "win" : "placeholder.jpg",
     "loose" : "placeholder.jpg",
