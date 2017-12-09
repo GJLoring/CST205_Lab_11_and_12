@@ -8,15 +8,6 @@
 #  Christian Guerrero
 #  Gabriel Loring
 
-##I'd like to create a graphic for the Title Screen when we start the game - Grace
-
-# Request, could we define a standard game screen size.  Maybe something like
-# 800 x 600 or 1024 x 768 so that the images will fit neatly with title bar and such
-# on any computer including laptops
-
-# To follow up on the note from Grace above lets create a set of asset lists ( as dictionaries
-# Just update the file names as you go. See note about optionals half way down.
-
 import os
 import java.awt.Font as Font
 import time
@@ -58,10 +49,10 @@ gameMapImages = {
 }
 
 gameInventoryImages = {
-    "nothing" : "placeholder.jpg",
-    "key" : "placeholder.jpg",
-    "secret" : "placeholder.jpg",
-    "necklace" : "placeholder.jpg",
+    "nothing" : "inventory_empty.jpg",
+    "key" : "inventory_key.jpg",
+    "secret" : "inventory_secret.jpg",
+    "necklace" : "inventory_necklace.jpg",
 }
 
 gameSounds = {
@@ -331,6 +322,8 @@ def pyCopy(source, targetX, targetY):
   for x in range (0, getWidth(source)):
     for y in range (0, getHeight(source)):
       pixelColor = getPixel(source, x, y)
+      if getRed(pixelColor) > 250 and getBlue(pixelColor) > 250 or getGreen(pixelColor) > 250:
+        continue
       if getRed(pixelColor) > 20 or getBlue(pixelColor) > 20 or getGreen(pixelColor) < 225:
         setColor( getPixel(gameScreen, x+targetX, y+targetY),getColor(pixelColor))
 
@@ -340,7 +333,7 @@ def drawInventory():
   '''
   imageFileName=gameInventoryImages[player["inventory"]]
   item = openImage(imageFileName=imageFileName)
-  pyCopy(item, INVENTORY_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH, INVENTORY_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT)
+  pyCopy(item, 900, 470)
 
 
 
@@ -417,7 +410,7 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   count = 0
   tmp = ""
   for char in textString:
-    if count == 0 and char.isalnum()==False:
+    if count == 0 and char.isalnum()==False and char != ' ':
       continue
     else:
       tmp = tmp + char
@@ -459,12 +452,12 @@ def titleMessage():
     return
 
 def welcomeMessage():
-    welcomString = "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-    welcomString = welcomString + "          Welcome to The Heist\n"
-    welcomString = welcomString + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-    welcomString = welcomString + "  Type help to learn how to play\n"
-    welcomString = welcomString + "  Type exit to leave the game\n"
-    welcomString = welcomString + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+    welcomString =                "++++++++++++++++++++++++++++++++++++\n"
+    welcomString = welcomString + "       Welcome to The Heist \n"
+    welcomString = welcomString + "++++++++++++++++++++++++++++++++++++\n"
+    welcomString = welcomString + "  Type help to learn how to play \n"
+    welcomString = welcomString + "    Type exit to leave the game \n"
+    welcomString = welcomString + "++++++++++++++++++++++++++++++++++++\n"
     outputStringToGraphic(welcomString)
     return
 
@@ -914,7 +907,7 @@ def gameLoop():
     while gameOn:
         loadRoomImage(imageFileName=gameScreenImages[player["location"]])
         drawHealthBar()
-        #drawInventory()
+        drawInventory()
         drawMap()
         describeRoom()
         #See if the player died
