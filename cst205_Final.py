@@ -74,8 +74,8 @@ gameSounds = {
     "library" : "library.wav",
     "park" : "park.wav",
     "start" : "placeholder.wav",
-    "getaway_vehicle" : "placeholder.wav",
-    "introduction" : "placeholder.wav",  # If we want or have time for events we can do some, all or none from here down
+    "getaway_vehicle" : "gataway_vehicler.wav",
+    "introduction" : "intro.wav",  # If we want or have time for events we can do some, all or none from here down
     "win" : "win.wav",
     "loose" : "lose.wav",
     "get_key" : "get_key.wav",
@@ -342,8 +342,8 @@ def drawInventory():
   item = openImage(imageFileName=imageFileName)
   pyCopy(item, INVENTORY_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH, INVENTORY_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT)
 
-  
-  
+
+
 def drawMap():
   '''
   Draw on screen map to help the player navigate the game
@@ -359,31 +359,31 @@ def drawHealthBar():
   '''
   Health_POS = int((GAME_OUTPUT_CANVAS_WIDTH - (HEALTHBAR_INSET_OFF_SIDES*1) )* (float(player["health"])/100))
   #Draw Full health portion of the bar
-  addRectFilled(gameScreen, 
-                HEALTHBAR_INSET_OFF_SIDES, 
-                HEALTH_BAR_Y, 
-                Health_POS, 
-                HEALTH_BAR_HEIGHT, 
+  addRectFilled(gameScreen,
+                HEALTHBAR_INSET_OFF_SIDES,
+                HEALTH_BAR_Y,
+                Health_POS,
+                HEALTH_BAR_HEIGHT,
                 COLOR_PURPLE)
   #Draw empty health portion of the bar
-  addRectFilled(gameScreen, 
-                Health_POS, 
-                HEALTH_BAR_Y, 
-                GAME_OUTPUT_CANVAS_WIDTH-(2*HEALTHBAR_INSET_OFF_SIDES), 
-                HEALTH_BAR_HEIGHT, 
+  addRectFilled(gameScreen,
+                Health_POS,
+                HEALTH_BAR_Y,
+                GAME_OUTPUT_CANVAS_WIDTH-(2*HEALTHBAR_INSET_OFF_SIDES),
+                HEALTH_BAR_HEIGHT,
                 COLOR_BLACK)
-  #Draw Boarder around health bar             
-  addRect(gameScreen, 
-          HEALTHBAR_INSET_OFF_SIDES, 
-          HEALTH_BAR_Y, 
-          GAME_OUTPUT_CANVAS_WIDTH-(2*HEALTHBAR_INSET_OFF_SIDES), 
-          HEALTH_BAR_HEIGHT, 
-          COLOR_RED)   
-  
+  #Draw Boarder around health bar
+  addRect(gameScreen,
+          HEALTHBAR_INSET_OFF_SIDES,
+          HEALTH_BAR_Y,
+          GAME_OUTPUT_CANVAS_WIDTH-(2*HEALTHBAR_INSET_OFF_SIDES),
+          HEALTH_BAR_HEIGHT,
+          COLOR_RED)
+
   # Put the word Health on the bar with the health value
   msgString = ("Health: %i"%player["health"])
   xpos = int(GAME_OUTPUT_CANVAS_WIDTH * (float(50)/100))
-  style = makeStyle("Courier", Font.BOLD, HEALTH_FONT_HEIGHT)                   
+  style = makeStyle("Courier", Font.BOLD, HEALTH_FONT_HEIGHT)
   addTextWithStyle(gameScreen, xpos, HEALTH_BAR_Y+HEALTH_FONT_HEIGHT, msgString, style, COLOR_WHITE)
 
 
@@ -404,38 +404,38 @@ def drawText(x,y,maxWidth,color,shadow,textString):
   ypos = int(GAME_OUTPUT_CANVAS_HEIGTH * (float(y)/100))
   xpos = int(GAME_OUTPUT_CANVAS_WIDTH * (float(x)/100))
   style = makeStyle("Courier", Font.BOLD, TEXT_HEIGHT)
-  
+
   #Clear the area where we are going to draw our text
-  addRectFilled(gameScreen, 
-                0, 
-                ypos-TEXT_HEIGHT, 
-                GAME_OUTPUT_CANVAS_WIDTH - 350 , 
-                GAME_OUTPUT_CANVAS_HEIGTH-ypos, 
+  addRectFilled(gameScreen,
+                0,
+                ypos-TEXT_HEIGHT,
+                GAME_OUTPUT_CANVAS_WIDTH - 350 ,
+                GAME_OUTPUT_CANVAS_HEIGTH-ypos,
                 COLOR_BLACK)
-                
+
   #Allow lines to wrap if they are too long
   count = 0
   tmp = ""
   for char in textString:
     if count == 0 and char.isalnum()==False:
       continue
-    else:  
+    else:
       tmp = tmp + char
       count = count + 1
-    
+
     #If we are getting close to the end of the line and see a
     # space it is probally a good idea to just go ahead and wrap
     # to a new line
-    if count >= (maxWidth - 6) and char == ' ': 
+    if count >= (maxWidth - 6) and char == ' ':
       count = 0
-      tmp = tmp + '\n' 
-    
-    # We are out of space and now must wrap even if it means splitting a word          
+      tmp = tmp + '\n'
+
+    # We are out of space and now must wrap even if it means splitting a word
     if count >= maxWidth:
       count = 0
       tmp = tmp + '\n'
 
-  lengthLimitedText = tmp   
+  lengthLimitedText = tmp
   lines = lengthLimitedText.split("\n")
   for line in lines:
     addTextWithStyle(gameScreen, xpos+1, ypos+1, line, style, shadow)
@@ -634,6 +634,8 @@ def try_to_move_player_to_new_room(DIRECTION_INDEX):
         showInformation("You try but the door is closed")
     elif passable == 'F':    # Fall hazard
         player["health"] = player["health"] - 50
+        file = openSound(gameSounds["fall_from_stairs"])
+        play(file)
         loadRoomImage(imageFileName=gameScreenImages["fall_from_stairs"])
         outputStringToGraphic("You tumble down the stairs and lose health")
         time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
@@ -763,10 +765,12 @@ def office_handler(action, item, subject):
     '''
     if item == 'key':
         player["inventory"] = 'key'
+        file = openSound(gameSounds["get_key"])
+        play(file)
         loadRoomImage(imageFileName=gameScreenImages["get_key"])
         outputStringToGraphic("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
         time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
-        
+
 def staircase_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
@@ -785,6 +789,8 @@ def hidden_handler(action, item, subject):
 
     if action == 'take' or action == 'get':
         player["inventory"] = 'necklace'
+        file = openSound(gameSounds["get_necklace"])
+        play(file)
         loadRoomImage(imageFileName=gameScreenImages["get_necklace"])
         outputStringToGraphic("Wasting no time you grab the necklace and conceal it in your jacket.\n")
         time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
@@ -800,6 +806,8 @@ def billiards_handler(action, item, subject):
         return
 
       player["inventory"] = 'secret'
+      file = openSound(gameSounds["get_secret"])
+      play(file)
       loadRoomImage(imageFileName=gameScreenImages["get_secret"])
       outputStringToGraphic("Opening the vault to find the secret to the chest with the necklace.\n")
       time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
@@ -811,6 +819,8 @@ def ballroom_handler(action, item, subject):
     if player["inventory"] == 'key' and action == 'open':
       ballroom["passable_NESW"] = "YOYY"
       player["inventory"] = ''
+      file = openSound(gameSounds["open_door"])
+      play(file)
       loadRoomImage(imageFileName=gameScreenImages["open_door"])
       outputStringToGraphic("You take a quick glance around the room and then use your key to unlock the library door.\n")
       time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
@@ -821,10 +831,12 @@ def library_handler(action, item, subject):
     '''
     if item == 'book':
         library["passable_NESW"] = "YNNY"
+        file = openSound(gameSounds["open_book_case"])
+        play(file)
         loadRoomImage(imageFileName=gameScreenImages["open_book_case"])
         outputStringToGraphic("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
         time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
-        
+
 def park_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
@@ -833,6 +845,8 @@ def park_handler(action, item, subject):
     msgString = msgString + "While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n"
     outputStringToGraphic(msgString)
     player["health"] = player["health"] - 50
+    file = openSound(gameSounds["get_mugged"])
+    play(file)
     loadRoomImage(imageFileName=gameScreenImages["get_mugged"])
     describeRoom()
     time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
@@ -850,17 +864,23 @@ def getaway_vehicle_handler(action, item, subject):
     '''
     if player["inventory"] == 'necklace':
       player["inventory"] = 'complete'
+      file = openSound(gameSounds["getaway_vehicle"])
+      play(file)
       outputStringToGraphic("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
     else:
       outputStringToGraphic("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
-    
+
     time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
-      
+
 def playerLoseScreen(playerName):
+    file = openSound(gameSounds["loose"])
+    play(file)
     msgString = "\nSorry! %s You have lost too much health.  Please try again!\n\nGAME OVER!"%(playerName)
     outputStringToGraphic(msgString)
 
 def playerWinsScreen(playerName):
+    file = openSound(gameSounds["win"])
+    play(file)
     msgString = "\nYou won %s! \n\nGAME OVER!"%(playerName)
     outputStringToGraphic(msgString)
 
@@ -879,9 +899,11 @@ def gameLoop():
     '''
     Main Game loop
     '''
+    file = openSound(gameSounds["introduction"])
+    play(file)
     show(gameScreen)
     loadRoomImage(imageFileName=gameScreenImages["title"])
-    
+
     titleMessage()
     welcomeMessage()
     story()
