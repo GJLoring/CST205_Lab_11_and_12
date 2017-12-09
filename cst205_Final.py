@@ -19,6 +19,7 @@
 
 import os
 import java.awt.Font as Font
+import time
 
 gameScreenImages = {
     "title" : "HomeScreen.jpg",
@@ -354,7 +355,7 @@ def drawHealthBar():
   '''
   Draw and label on screen health indicator
   '''
-  Health_POS = int((GAME_OUTPUT_CANVAS_WIDTH - (HEALTHBAR_INSET_OFF_SIDES*2) )* (float(player["health"])/100))
+  Health_POS = int((GAME_OUTPUT_CANVAS_WIDTH - (HEALTHBAR_INSET_OFF_SIDES*1) )* (float(player["health"])/100))
   #Draw Full health portion of the bar
   addRectFilled(gameScreen, 
                 HEALTHBAR_INSET_OFF_SIDES, 
@@ -451,49 +452,16 @@ def playRoomSound():
 def refreshScreen():
   show(gameScreen)
 
-def updateScreen(ouputTextString):
-  '''
-  Communicate Change in game state with the user
-  '''
-  tempHealthValue = 75
-
-  loadRoomImage()
-
-  drawInventory(  INVENTORY_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  INVENTORY_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT)
-
-  drawHealthBar(  HEALTH_BAR_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  HEALTH_BAR_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  HEALTH_BAR_SIZE_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  HEALTH_BAR_SIZE_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  tempHealthValue)
-
-  drawMap(        MAP_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  MAP_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  MAP_COLOR)
-
-  drawText(       TEXT_LOCATION_X_AS_A_PERCENT_OF_SCREEN_WIDTH,
-                  TEXT_LOCATION_Y_AS_A_PERCENT_OF_SCREEN_HEIGHT,
-                  MAX_TEXT_WIDTH_IN_CHARS,
-                  TEXT_COLOR,
-                  TEXT_SHADOW,
-                  ouputTextString)
-
-  print type(gameScreen)
-  playRoomSound()
-  refreshScreen()
-
-
 def titleMessage():
     printNow(title)
     return
 
 def welcomeMessage():
     welcomString = "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-    welcomString = welcomString + "Welcome to The Heist\n"
+    welcomString = welcomString + "          Welcome to The Heist\n"
     welcomString = welcomString + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-    welcomString = welcomString + "Type help to learn how to play\n"
-    welcomString = welcomString + "Type exit to leave the game\n"
+    welcomString = welcomString + "  Type help to learn how to play\n"
+    welcomString = welcomString + "  Type exit to leave the game\n"
     welcomString = welcomString + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
     outputStringToGraphic(welcomString)
     return
@@ -894,7 +862,7 @@ def gameLoop():
     '''
     show(gameScreen)
     loadRoomImage(imageFileName=gameScreenImages["title"])
-
+    
     titleMessage()
     welcomeMessage()
     story()
