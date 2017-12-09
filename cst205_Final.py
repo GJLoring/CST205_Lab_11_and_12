@@ -35,12 +35,12 @@ gameScreenImages = {
     "introduction" : "placeholder.jpg",  # If we want or have time for events we can do some, all or none from here down
     "win" : "placeholder.jpg",
     "loose" : "placeholder.jpg",
-    "get_key" : "placeholder.jpg",
-    "get_secret" : "placeholder.jpg",
+    "get_key" : "OfficeRoomkey.jpg",
+    "get_secret" : "BilliardsRoomgetkey.jpg",
     "get_necklace" : "placeholder.jpg",
-    "open_book_case" : "placeholder.jpg",
+    "open_book_case" : "Libraryopen.jpg",
     "open_door" : "placeholder.jpg",
-    "fall_from_stairs" : "placeholder.jpg",
+    "fall_from_stairs" : "Staircasefall.jpg",
     "get_mugged" : "placeholder.jpg"
 }
 
@@ -114,6 +114,8 @@ SOUTH = 2
 WEST  = 3
 
 MAP_WIDTH = 3
+
+PAUSE_FOR_CUT_SCENE = 5.0
 
 # Global to describe how many empty commands before it assumed the player wants to quit
 EMPTY_ENTERS_TO_BAIL_OUT = 3
@@ -632,7 +634,9 @@ def try_to_move_player_to_new_room(DIRECTION_INDEX):
         showInformation("You try but the door is closed")
     elif passable == 'F':    # Fall hazard
         player["health"] = player["health"] - 50
-        showInformation("You tumble down the stairs and lose health")
+        loadRoomImage(imageFileName=gameScreenImages["fall_from_stairs"])
+        outputStringToGraphic("You tumble down the stairs and lose health")
+        time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
     else:
         showInformation("You can not move in that direction")
 
@@ -759,8 +763,10 @@ def office_handler(action, item, subject):
     '''
     if item == 'key':
         player["inventory"] = 'key'
+        loadRoomImage(imageFileName=gameScreenImages["get_key"])
         outputStringToGraphic("Sliding your hand over the key you palm it and let your arm fall to your side as your fingers loosen their grip allowing it to fall silently into your pocket.\n")
-
+        time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
+        
 def staircase_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
@@ -774,11 +780,14 @@ def hidden_handler(action, item, subject):
     '''
     if player["inventory"] != 'secret':
       outputStringToGraphic('You must first have the secret to the chest')
+      time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
       return
 
     if action == 'take' or action == 'get':
         player["inventory"] = 'necklace'
+        loadRoomImage(imageFileName=gameScreenImages["get_necklace"])
         outputStringToGraphic("Wasting no time you grab the necklace and conceal it in your jacket.\n")
+        time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
 
 def billiards_handler(action, item, subject):
     '''
@@ -787,10 +796,13 @@ def billiards_handler(action, item, subject):
     if action == 'open':
       if player["inventory"] == 'key':
         outputStringToGraphic("You can only hold one hidden item at a time, use the key you have to open the library then come back here")
+        time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
         return
 
       player["inventory"] = 'secret'
+      loadRoomImage(imageFileName=gameScreenImages["get_secret"])
       outputStringToGraphic("Opening the vault to find the secret to the chest with the necklace.\n")
+      time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
 
 def ballroom_handler(action, item, subject):
     '''
@@ -799,8 +811,9 @@ def ballroom_handler(action, item, subject):
     if player["inventory"] == 'key' and action == 'open':
       ballroom["passable_NESW"] = "YOYY"
       player["inventory"] = ''
+      loadRoomImage(imageFileName=gameScreenImages["open_door"])
       outputStringToGraphic("You take a quick glance around the room and then use your key to unlock the library door.\n")
-
+      time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
 
 def library_handler(action, item, subject):
     '''
@@ -808,8 +821,10 @@ def library_handler(action, item, subject):
     '''
     if item == 'book':
         library["passable_NESW"] = "YNNY"
+        loadRoomImage(imageFileName=gameScreenImages["open_book_case"])
         outputStringToGraphic("Grabbing the hissing book from the shelf you pull it out. Like any good episode of Scooby Doo a hidden panel slides open revealing a passage to the north.\n")
-
+        time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
+        
 def park_handler(action, item, subject):
     '''
     The room handle takes care of opening or closing doors, using inventor items, adding inventory items and NPC interactions
@@ -818,7 +833,9 @@ def park_handler(action, item, subject):
     msgString = msgString + "While your are in the park you are mugged by a gang of unruly pensioners and loose 50 health!\n"
     outputStringToGraphic(msgString)
     player["health"] = player["health"] - 50
+    loadRoomImage(imageFileName=gameScreenImages["get_mugged"])
     describeRoom()
+    time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
 
 def start_handler(action, item, subject):
     '''
@@ -836,7 +853,9 @@ def getaway_vehicle_handler(action, item, subject):
       outputStringToGraphic("With a nod to the getaway driver you pull out the necklace as she floors the accelerator comleting your escape.")
     else:
       outputStringToGraphic("Getting in the getaway vehicle without the necklace seems to upset your getaway driver, she roughs you up costing you 50 health!")
-
+    
+    time.sleep(PAUSE_FOR_CUT_SCENE)   #Pause so the player can see the update
+      
 def playerLoseScreen(playerName):
     msgString = "\nSorry! %s You have lost too much health.  Please try again!\n\nGAME OVER!"%(playerName)
     outputStringToGraphic(msgString)
