@@ -286,8 +286,9 @@ def openImage(imageFileName="placeholder.jpg"):
   '''
   dir_path = os.path.dirname(os.path.realpath(__file__))
   mediaImagesDir = os.path.join(dir_path, "images")
+  print "Open Image:\n\tdir_path:\t\t%s\n\tmediaImagesDir:\t%s\n\timageFileName:\t%s"%(dir_path,mediaImagesDir,imageFileName) #TODO DEL ME
   setMediaPath(mediaImagesDir)
-  imageObject = makePicture(imageFileName)
+  imageObject = makePicture(getMediaPath(imageFileName))
   return imageObject
 
 def openSound(soundFileName="placeholder.wav"):
@@ -299,9 +300,10 @@ def openSound(soundFileName="placeholder.wav"):
   a file or directory selection box
   '''
   dir_path = os.path.dirname(os.path.realpath(__file__))
-  mediaImagesDir = os.path.join(dir_path, "audio")
-  setMediaPath(mediaImagesDir)
-  soundObject = makeSound(soundFileName)
+  mediaAudioDir = os.path.join(dir_path, "audio")
+  print "Open Audio:\n\tdir_path:\t\t%s\n\tmediaAudioDir:\t%s\n\tsoundFileName:\t%s"%(dir_path,mediaAudioDir,soundFileName) #TODO DEL ME
+  setMediaPath(mediaAudioDir)  
+  soundObject = makeSound(getMediaPath(soundFileName))
   return soundObject
 
 def pyCopy(source, targetX, targetY):
