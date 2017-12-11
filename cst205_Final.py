@@ -871,12 +871,14 @@ def getaway_vehicle_handler(action, item, subject):
 def playerLoseScreen(playerName):
     file = openSound(gameSounds["loose"])
     play(file)
+    loadRoomImage(imageFileName=gameScreenImages["loose"])
     msgString = "\nSorry! %s You have lost too much health.  Please try again!\n\nGAME OVER!"%(playerName)
     outputStringToGraphic(msgString)
 
 def playerWinsScreen(playerName):
     file = openSound(gameSounds["win"])
     play(file)
+    loadRoomImage(imageFileName=gameScreenImages["win"])
     msgString = "\nYou won %s! \n\nGAME OVER!"%(playerName)
     outputStringToGraphic(msgString)
 
