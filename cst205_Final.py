@@ -30,7 +30,7 @@ gameScreenImages = {
     "get_secret" : "BilliardsRoomgetkey.jpg",
     "get_necklace" : "HiddenRoomNecklace.jpg",
     "open_book_case" : "Libraryopen.jpg",
-    "open_door" : "Library.jpg",
+    "open_door" : "open_door.jpg",
     "fall_from_stairs" : "Staircasefall.jpg",
     "get_mugged" : "Mugged.jpg"
 }
@@ -53,6 +53,7 @@ gameInventoryImages = {
     "key" : "inventory_key.jpg",
     "secret" : "inventory_secret.jpg",
     "necklace" : "inventory_necklace.jpg",
+    "complete" : "inventory_empty.jpg"
 }
 
 gameSounds = {
@@ -813,7 +814,7 @@ def ballroom_handler(action, item, subject):
     '''
     if player["inventory"] == 'key' and action == 'open':
       ballroom["passable_NESW"] = "YOYY"
-      player["inventory"] = ''
+      player["inventory"] = 'nothing'
       file = openSound(gameSounds["open_door"])
       play(file)
       loadRoomImage(imageFileName=gameScreenImages["open_door"])
