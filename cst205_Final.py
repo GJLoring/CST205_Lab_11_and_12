@@ -25,14 +25,14 @@ gameScreenImages = {
     "getaway_vehicle" : "GetawayCar.jpg",
     "introduction" : "placeholder.jpg",  # If we want or have time for events we can do some, all or none from here down
     "win" : "Win.jpg",
-    "loose" : "Arrested.jpg",
+    "loose" : "Mugged.jpg",
     "get_key" : "OfficeRoomkey.jpg",
     "get_secret" : "BilliardsRoomgetkey.jpg",
     "get_necklace" : "HiddenRoomNecklace.jpg",
     "open_book_case" : "Libraryopen.jpg",
-    "open_door" : "placeholder.jpg",
+    "open_door" : "Library.jpg",
     "fall_from_stairs" : "Staircasefall.jpg",
-    "get_mugged" : "placeholder.jpg"
+    "get_mugged" : "Mugged.jpg"
 }
 
 gameMapImages = {
@@ -199,7 +199,7 @@ billiards = {
     "room_description": "The billiards room is filled with many games, but you won't find what you're looking for here. To open the vault type open.",
     "passable_NESW": "NYNN",
     "npc": larry,
-    "object": "secret_book"}
+    "object": "nothing"}
 
 ballroom = {
     "room_description": "The ballroom is filled with 100 guests, all dancing. To the north is the staircase, to the east lies the library, to the west lies the billiards room. You must blend in with the party. Do not get caught as you make your way to the next room.",
@@ -211,7 +211,7 @@ library = {
     "room_description": "The room is the library. The library holds books along its walls. Along these walls is a special book that leads to a hidden room. Find the book that hisses and slithers and you will find the secret room.",
     "passable_NESW": "CNNY",
     "npc": larry,
-    "object": "nothing"}
+    "object": "secret_book"}
 
 
 park = {
