@@ -327,6 +327,8 @@ def pyCopy(source, targetX, targetY):
       pixelColor = getPixel(source, x, y)
       if getRed(pixelColor) > 250 and getBlue(pixelColor) > 250 or getGreen(pixelColor) > 250:
         continue
+      if (getRed(pixelColor) + getBlue(pixelColor)) < 255 and getGreen(pixelColor) > 200:
+        continue
       if getRed(pixelColor) > 20 or getBlue(pixelColor) > 20 or getGreen(pixelColor) < 225:
         setColor( getPixel(gameScreen, x+targetX, y+targetY),getColor(pixelColor))
 
